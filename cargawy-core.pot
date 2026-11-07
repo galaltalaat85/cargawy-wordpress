@@ -1,0 +1,448 @@
+# Copyright (C) 2026 CarGawy
+# This file is distributed under the Proprietary.
+msgid ""
+msgstr ""
+"Project-Id-Version: CarGawy Core 0.2.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cargawy-core\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-11-07T02:28:54+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: cargawy-core\n"
+
+#. Plugin Name of the plugin
+#: cargawy-core.php:3
+msgid "CarGawy Core"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: cargawy-core.php:4
+msgid "https://cargawy.com"
+msgstr ""
+
+#. Description of the plugin
+#: cargawy-core.php:5
+msgid "Business logic for the CarGawy used-car marketplace: data model, roles and capabilities, workflows, audit log and settings."
+msgstr ""
+
+#. Author of the plugin
+#: cargawy-core.php:9
+#: includes/Admin/Menu.php:35
+#: includes/Admin/Menu.php:36
+msgid "CarGawy"
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:26
+msgid "You are not allowed to read the audit log."
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:44
+#: includes/Admin/Menu.php:44
+msgid "Audit log"
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:45
+msgid "Every sensitive action is recorded here. Entries cannot be edited or deleted."
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:48
+msgid "Filter by type"
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:49
+msgid "All types"
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:54
+msgid "Filter"
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:58
+msgid "When (UTC)"
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:58
+msgid "Actor"
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:58
+msgid "Entity"
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:58
+msgid "Action"
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:58
+msgid "From"
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:58
+msgid "To"
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:58
+msgid "Note"
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:64
+msgid "No entries yet."
+msgstr ""
+
+#: includes/Admin/AuditLogPage.php:68
+msgid "System"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:34
+msgid "CarGawy database tables"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:35
+#: includes/Admin/HealthPage.php:66
+msgid "missing"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:37
+msgid "Deactivate and reactivate the plugin."
+msgstr ""
+
+#: includes/Admin/HealthPage.php:41
+msgid "Schema version"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:48
+msgid "Roles version"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:54
+msgid "PHP version"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:54
+msgid "hPanel → Advanced → PHP Configuration."
+msgstr ""
+
+#. translators: %s: PHP extension name.
+#: includes/Admin/HealthPage.php:65
+#, php-format
+msgid "PHP extension: %s"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:66
+msgid "loaded"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:68
+msgid "hPanel → PHP Configuration → PHP extensions."
+msgstr ""
+
+#: includes/Admin/HealthPage.php:73
+msgid "WebP image support (gd or imagick)"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:74
+msgid "available"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:74
+msgid "not available"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:76
+msgid "Enable imagick or gd with WebP."
+msgstr ""
+
+#: includes/Admin/HealthPage.php:81
+msgid "Max upload size"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:84
+msgid "Set upload_max_filesize ≥ 16M and post_max_size ≥ 64M."
+msgstr ""
+
+#: includes/Admin/HealthPage.php:88
+msgid "PHP memory_limit"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:91
+msgid "Set memory_limit to 256M or more."
+msgstr ""
+
+#: includes/Admin/HealthPage.php:94
+msgid "HTTPS"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:95
+msgid "site URL uses https"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:95
+msgid "site URL uses http"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:97
+msgid "Enable SSL in hPanel and update Site Address."
+msgstr ""
+
+#: includes/Admin/HealthPage.php:101
+msgid "Server cron"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:102
+msgid "DISABLE_WP_CRON is on (server cron expected)"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:102
+msgid "WordPress pseudo-cron"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:104
+msgid "Add an hPanel cron job calling wp-cron.php every 5 minutes, then set DISABLE_WP_CRON."
+msgstr ""
+
+#: includes/Admin/HealthPage.php:140
+msgid "Private document storage outside public_html"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:141
+msgid "writable"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:141
+msgid "inside web root"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:141
+msgid "not writable"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:143
+msgid "Needed from Phase 8. Create the folder next to public_html via hPanel File Manager."
+msgstr ""
+
+#: includes/Admin/HealthPage.php:152
+#: includes/Admin/RolesPage.php:27
+msgid "You are not allowed to view this page."
+msgstr ""
+
+#: includes/Admin/HealthPage.php:155
+msgid "OK"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:156
+#: includes/Admin/HealthPage.php:168
+msgid "Check"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:157
+msgid "Problem"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:165
+msgid "CarGawy — System health"
+msgstr ""
+
+#. translators: %s: plugin version.
+#: includes/Admin/HealthPage.php:167
+#, php-format
+msgid "CarGawy Core %s. Server checks below follow the Hostinger Business compatibility checklist."
+msgstr ""
+
+#: includes/Admin/HealthPage.php:168
+msgid "Value"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:168
+msgid "Status"
+msgstr ""
+
+#: includes/Admin/HealthPage.php:168
+msgid "How to fix"
+msgstr ""
+
+#: includes/Admin/Menu.php:43
+msgid "System health"
+msgstr ""
+
+#: includes/Admin/Menu.php:45
+#: includes/Admin/RolesPage.php:34
+msgid "Roles & permissions"
+msgstr ""
+
+#: includes/Admin/Menu.php:46
+msgid "Settings"
+msgstr ""
+
+#: includes/Admin/RolesPage.php:29
+msgid "Administrator"
+msgstr ""
+
+#: includes/Admin/RolesPage.php:35
+msgid "Defined in code and versioned. To change a permission, update the matrix in cargawy-core and deploy."
+msgstr ""
+
+#: includes/Admin/RolesPage.php:36
+msgid "Capability"
+msgstr ""
+
+#: includes/Admin/RolesPage.php:54
+msgid "Yes"
+msgstr ""
+
+#: includes/Admin/RolesPage.php:54
+msgid "No"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:63
+msgid "Enabled"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:105
+msgid "You are not allowed to change CarGawy settings."
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:107
+msgid "CarGawy settings"
+msgstr ""
+
+#: includes/Settings/Settings.php:29
+msgid "Contact details"
+msgstr ""
+
+#: includes/Settings/Settings.php:30
+msgid "Listings & verification"
+msgstr ""
+
+#: includes/Settings/Settings.php:31
+msgid "Analytics & Search Console"
+msgstr ""
+
+#: includes/Settings/Settings.php:32
+msgid "Data & privacy"
+msgstr ""
+
+#: includes/Settings/Settings.php:49
+msgid "Phone"
+msgstr ""
+
+#: includes/Settings/Settings.php:50
+msgid "Egyptian number, e.g. 01012345678 or +201012345678."
+msgstr ""
+
+#: includes/Settings/Settings.php:56
+msgid "WhatsApp"
+msgstr ""
+
+#: includes/Settings/Settings.php:57
+msgid "Used for CarGawy inventory listings."
+msgstr ""
+
+#: includes/Settings/Settings.php:63
+msgid "Email"
+msgstr ""
+
+#: includes/Settings/Settings.php:70
+msgid "Address"
+msgstr ""
+
+#: includes/Settings/Settings.php:77
+msgid "Working hours"
+msgstr ""
+
+#: includes/Settings/Settings.php:84
+msgid "Facebook page URL"
+msgstr ""
+
+#: includes/Settings/Settings.php:91
+msgid "Instagram URL"
+msgstr ""
+
+#: includes/Settings/Settings.php:98
+msgid "TikTok URL"
+msgstr ""
+
+#: includes/Settings/Settings.php:107
+msgid "Max active listings per individual seller"
+msgstr ""
+
+#: includes/Settings/Settings.php:108
+msgid "Default 3 until the owner decides."
+msgstr ""
+
+#: includes/Settings/Settings.php:116
+msgid "Expire listings after (days without update)"
+msgstr ""
+
+#: includes/Settings/Settings.php:125
+msgid "Keep sold listings indexable for (days)"
+msgstr ""
+
+#: includes/Settings/Settings.php:134
+msgid "Inspection badge validity (days)"
+msgstr ""
+
+#: includes/Settings/Settings.php:135
+msgid "The \"Checked by CarGawy\" badge is removed after this period."
+msgstr ""
+
+#: includes/Settings/Settings.php:143
+msgid "Minimum photos per listing"
+msgstr ""
+
+#: includes/Settings/Settings.php:150
+msgid "Google Analytics 4 measurement ID"
+msgstr ""
+
+#: includes/Settings/Settings.php:151
+msgid "Format G-XXXXXXXXXX. Loaded only after visitor consent."
+msgstr ""
+
+#: includes/Settings/Settings.php:157
+msgid "Meta Pixel ID"
+msgstr ""
+
+#: includes/Settings/Settings.php:158
+msgid "Digits only."
+msgstr ""
+
+#: includes/Settings/Settings.php:164
+msgid "Google Ads conversion ID"
+msgstr ""
+
+#: includes/Settings/Settings.php:165
+msgid "Format AW-XXXXXXXXX."
+msgstr ""
+
+#: includes/Settings/Settings.php:171
+msgid "Google Search Console verification code"
+msgstr ""
+
+#: includes/Settings/Settings.php:172
+msgid "Only the content value of the meta tag."
+msgstr ""
+
+#: includes/Settings/Settings.php:180
+msgid "Anonymize leads after (months)"
+msgstr ""
+
+#: includes/Settings/Settings.php:181
+msgid "Confirm with legal counsel."
+msgstr ""
+
+#: includes/Settings/Settings.php:187
+msgid "Delete all CarGawy data when the plugin is deleted"
+msgstr ""
+
+#: includes/Settings/Settings.php:188
+msgid "Leave off. When on, deleting the plugin permanently removes all listings data, leads, inspections and the audit log."
+msgstr ""
+
+#. translators: %s: field label.
+#: includes/Settings/Settings.php:278
+#, php-format
+msgid "%s: invalid value, the previous value was kept."
+msgstr ""

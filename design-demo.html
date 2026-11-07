@@ -1,0 +1,1005 @@
+<title>CarGawy Demo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: brand-committed light UI. Navy bands (hero, footer, dashboard rail) frame white information cards; green marks only verified or actionable things ("على نور" = information made visible). Single deliberate theme. */
+:root{
+  --navy:#061629; --navy-2:#142B35; --green:#22A66F; --green-ink:#17794F; --lime:#00E65A;
+  --paper:#F2F4F2; --white:#FFFFFF; --gold:#D6A85F;
+  --ink:#061629; --muted:#4A5A63; --line:#DCE2DF; --soft:#E8EDEA;
+  --warn:#8A5200; --warn-bg:#FFF4E0; --danger:#B42318; --danger-bg:#FDECEA; --info:#1F5E8C; --info-bg:#E8F1F8; --ok-bg:#E3F4EC; --gold-bg:#F7EEDD;
+  --on-navy:#FFFFFF; --on-navy-muted:#A9B8C0;
+  --f-ar:"Cairo","Segoe UI",Tahoma,sans-serif; --f-en:"Inter","Segoe UI",Roboto,Arial,sans-serif;
+  --r-s:6px; --r-m:12px; --sh1:0 1px 2px rgba(6,22,41,.06),0 1px 1px rgba(6,22,41,.04); --sh2:0 10px 28px rgba(6,22,41,.14);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ar);font-size:16px;line-height:1.8;-webkit-font-smoothing:antialiased}
+html[lang="en"] body{font-family:var(--f-en);line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--white)}
+h1,h2,h3,h4{line-height:1.35;text-wrap:balance;margin:0}
+html[lang="en"] h1,html[lang="en"] h2,html[lang="en"] h3{line-height:1.2}
+p{margin:0}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--green-ink);outline-offset:2px;border-radius:4px}
+.dark :focus-visible{outline-color:var(--lime)}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media(min-width:768px){.wrap{padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+svg{flex:none}
+
+/* demo bar */
+.demobar{background:var(--navy-2);color:var(--on-navy);font-size:13px}
+.demobar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding-block:8px}
+.demobar strong{color:var(--gold)}
+.demobar nav{display:flex;flex-wrap:wrap;gap:4px}
+.demobar a{text-decoration:none;padding:2px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.18);color:var(--on-navy-muted)}
+.demobar a[aria-current="page"]{background:var(--green);color:var(--navy);border-color:var(--green);font-weight:700}
+
+/* header */
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--white);border-bottom:1px solid var(--line)}
+.hdr .wrap{display:flex;align-items:center;gap:16px;min-height:64px}
+.logo{display:flex;align-items:baseline;gap:8px;text-decoration:none;font-family:var(--f-en);font-weight:800;font-size:24px;letter-spacing:-.5px;color:var(--navy)}
+.logo span{color:var(--green-ink)}
+.logo-img{width:56px;height:56px;border-radius:50%;display:block}
+@media(max-width:600px){.logo-img{width:48px;height:48px}}
+.ftr .logo-img{width:120px;height:120px}
+.logo small{font-family:var(--f-ar);font-size:10px;font-weight:600;letter-spacing:0;color:var(--muted);border:1px dashed var(--line);padding:0 6px;border-radius:4px}
+.mainnav{display:flex;gap:4px;margin-inline-start:12px}
+.mainnav a{text-decoration:none;padding:8px 12px;border-radius:var(--r-s);font-weight:600;color:var(--muted)}
+.mainnav a:hover,.mainnav a[aria-current="page"]{color:var(--navy);background:var(--soft)}
+.hdr-end{margin-inline-start:auto;display:flex;align-items:center;gap:8px}
+.iconbtn{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:var(--r-s);border:1px solid var(--line);background:var(--white);cursor:pointer}
+.langbtn{height:44px;padding:0 12px;border-radius:var(--r-s);border:1px solid var(--line);background:var(--white);cursor:pointer;font-weight:700;font-size:14px}
+.menubtn{display:none}
+@media(max-width:900px){
+  .mainnav{display:none;position:absolute;inset-inline:0;top:100%;background:var(--white);flex-direction:column;padding:8px 16px 16px;border-bottom:1px solid var(--line);box-shadow:var(--sh2);margin:0}
+  .mainnav.open{display:flex}
+  .mainnav a{padding:12px}
+  .menubtn{display:inline-grid}
+  .hdr .btn-sell{display:none}
+}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:var(--r-s);border:1px solid transparent;font-weight:700;text-decoration:none;cursor:pointer;transition:background .15s,box-shadow .15s,transform .15s;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--green);color:var(--navy)}
+.btn-primary:hover{background:#28b97c}
+.btn-navy{background:var(--navy);color:var(--white)}
+.btn-navy:hover{background:var(--navy-2)}
+.btn-outline{background:var(--white);border-color:var(--line);color:var(--navy)}
+.btn-outline:hover{border-color:var(--navy)}
+.btn-ghost-dark{background:transparent;color:var(--white);border-color:rgba(255,255,255,.35)}
+.btn-ghost-dark:hover{border-color:var(--white)}
+.btn-wa{background:var(--green-ink);color:var(--white)}
+.btn-wa:hover{background:#12663F}
+.btn-danger{background:var(--white);color:var(--danger);border-color:#F0C4BF}
+.btn-l{min-height:52px;font-size:17px}
+.btn-s{min-height:36px;padding:0 12px;font-size:14px}
+.btn-block{width:100%}
+
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;line-height:1;padding:6px 9px;border-radius:999px;white-space:nowrap}
+.chip svg{width:14px;height:14px}
+.c-ok{background:var(--ok-bg);color:var(--green-ink)}
+.c-badge{background:var(--green);color:var(--navy)}
+.c-info{background:var(--info-bg);color:var(--info)}
+.c-warn{background:var(--warn-bg);color:var(--warn)}
+.c-danger{background:var(--danger-bg);color:var(--danger)}
+.c-neutral{background:var(--white);color:var(--muted);border:1px solid var(--line)}
+.c-gold{background:var(--gold-bg);color:#6B4E1E;border:1px solid #E8D3AE}
+.c-navy{background:var(--navy);color:var(--white)}
+
+/* hero */
+.hero{background:var(--navy);color:var(--on-navy);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:auto -10% -60% 30%;height:120%;background:radial-gradient(closest-side,rgba(34,166,111,.22),transparent 70%);pointer-events:none}
+html[dir="rtl"] .hero::after{inset:auto 30% -60% -10%}
+.hero .wrap{position:relative;z-index:1;display:grid;gap:28px;padding-block:40px 32px}
+@media(min-width:1024px){.hero .wrap{grid-template-columns:1.05fr .95fr;align-items:center;padding-block:64px 56px}}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--green)}
+html[lang="en"] .eyebrow{text-transform:uppercase;letter-spacing:.08em}
+.hero h1{font-size:clamp(30px,6vw,52px);font-weight:800;margin-block:8px 12px}
+.hero h1 em{font-style:normal;color:var(--lime)}
+.hero .lede{color:var(--on-navy-muted);font-size:17px;max-width:46ch}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.hero-art{max-width:560px;width:100%;justify-self:center}
+.hero-art svg{border-radius:var(--r-m);display:block;width:100%;height:auto}
+@media(min-width:901px){.mainnav .mob-only{display:none}}
+.hero-art .note{font-size:12px;color:var(--on-navy-muted);text-align:center;margin-top:4px}
+
+/* search panel */
+.searchpanel{background:var(--white);color:var(--ink);border-radius:var(--r-m);box-shadow:var(--sh2);padding:16px;display:grid;gap:12px;grid-template-columns:1fr 1fr}
+.searchpanel .f-wide{grid-column:1/-1}
+@media(min-width:1024px){.searchpanel{grid-template-columns:repeat(5,1fr) auto;align-items:end;padding:20px}.searchpanel .f-wide{grid-column:auto}}
+.searchwrap{position:relative;z-index:2;margin-top:-4px;padding-bottom:8px}
+.field{display:grid;gap:4px;min-width:0}
+.field label,.flabel{font-size:13px;font-weight:700;color:var(--muted)}
+.input,select.input,textarea.input{width:100%;min-height:44px;border:1px solid var(--line);border-radius:var(--r-s);background:var(--white);padding:8px 12px}
+textarea.input{min-height:96px;resize:vertical}
+.input:focus{border-color:var(--green-ink);outline:none;box-shadow:0 0 0 3px rgba(34,166,111,.18)}
+.help{font-size:12.5px;color:var(--muted)}
+
+/* sections */
+.sec{padding-block:48px}
+.sec-h{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:8px 16px;margin-bottom:20px}
+.sec-h h2{font-size:clamp(22px,3.4vw,30px);font-weight:800}
+.sec-h p{color:var(--muted);max-width:60ch}
+.link{color:var(--green-ink);font-weight:700;text-decoration:none}
+.link:hover{text-decoration:underline}
+
+/* make chips */
+.makes{display:flex;flex-wrap:wrap;gap:8px}
+.make{display:flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;background:var(--white);border:1px solid var(--line);border-radius:999px;text-decoration:none;font-weight:700;cursor:pointer}
+html[dir="rtl"] .make{padding:8px 8px 8px 14px}
+.make:hover{border-color:var(--navy)}
+.make i{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--navy);color:var(--white);font-style:normal;font-family:var(--f-en);font-size:12px}
+.make b{font-weight:600;color:var(--muted);font-size:13px}
+
+/* car grid & card */
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.card{position:relative;background:var(--white);border-radius:var(--r-m);box-shadow:var(--sh1);border:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .2s,transform .2s}
+.card:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
+.card a.cover{position:absolute;inset:0;z-index:1}
+.card .ph{aspect-ratio:4/3;max-width:100%;position:relative;background:var(--soft)}
+.card .ph svg{width:100%;height:100%;display:block}
+.card .tl{position:absolute;inset-block-start:10px;inset-inline-start:10px;display:flex;gap:6px;flex-wrap:wrap}
+.fav{position:absolute;inset-block-start:8px;inset-inline-end:8px;z-index:2;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.92);display:grid;place-items:center;cursor:pointer;box-shadow:var(--sh1)}
+.fav[aria-pressed="true"] svg{fill:var(--danger);stroke:var(--danger)}
+.card .bd{padding:14px 16px 16px;display:grid;gap:8px;flex:1}
+.card h3{font-size:17px;font-weight:700}
+.card h3 bdi{font-family:inherit}
+.specs{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13.5px;color:var(--muted)}
+.specs span{display:inline-flex;align-items:center;gap:5px}
+.specs svg{width:15px;height:15px}
+.price{font-size:21px;font-weight:800;color:var(--navy)}
+.price small{font-size:13px;font-weight:600;color:var(--muted)}
+.card .ver{display:flex;flex-wrap:wrap;gap:6px;padding-top:10px;border-top:1px solid var(--soft);margin-top:auto}
+.ribbon{position:absolute;inset-block-end:10px;inset-inline-start:10px}
+
+/* trust */
+.trust{background:var(--white);border-block:1px solid var(--line)}
+.trust-grid{display:grid;gap:16px}
+@media(min-width:900px){.trust-grid{grid-template-columns:1fr 1fr}}
+.tcard{border:1px solid var(--line);border-radius:var(--r-m);padding:20px;display:grid;gap:12px;align-content:start}
+.tcard h3{font-size:20px;display:flex;align-items:center;gap:10px}
+.tcard h3 .ic{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--navy);color:var(--lime)}
+.lists{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+@media(max-width:520px){.lists{grid-template-columns:1fr}}
+.lists h4{font-size:14px;margin-bottom:4px}
+.lists ul{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:14.5px}
+.lists li{display:flex;gap:6px;align-items:flex-start}
+.lists li svg{width:16px;height:16px;margin-top:5px}
+.yes svg{color:var(--green-ink)} .no svg{color:var(--muted)}
+.rule{font-size:14px;background:var(--paper);border-radius:var(--r-s);padding:10px 12px;color:var(--muted)}
+
+/* why */
+.why{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.why div{display:grid;gap:6px}
+.why h3{font-size:17px}
+.why p{color:var(--muted);font-size:15px}
+.why .ic{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;background:var(--ok-bg);color:var(--green-ink)}
+
+/* steps */
+.steps{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));counter-reset:s;margin:0;padding:0;list-style:none}
+.steps li{counter-increment:s;background:var(--white);border:1px solid var(--line);border-radius:var(--r-m);padding:18px;display:grid;gap:6px}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--navy);color:var(--white);font-weight:800;font-family:var(--f-en)}
+.steps p{color:var(--muted);font-size:15px}
+
+/* cta band */
+.band{background:var(--navy-2);color:var(--on-navy)}
+.band .wrap{display:grid;gap:16px;padding-block:36px;align-items:center}
+@media(min-width:800px){.band .wrap{grid-template-columns:1fr auto}}
+.band h2{font-size:clamp(22px,3.4vw,30px)}
+.band p{color:var(--on-navy-muted)}
+
+/* blog */
+.post{background:var(--white);border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden;display:grid}
+.post .pt{aspect-ratio:16/8;background:linear-gradient(135deg,var(--navy),var(--navy-2));display:grid;place-items:center;color:var(--green);max-width:100%}
+.post .pb{padding:16px;display:grid;gap:6px}
+.post h3{font-size:17px}
+.post .meta{font-size:13px;color:var(--muted)}
+
+/* faq */
+.faq{display:grid;gap:8px;max-width:820px}
+.faq details{background:var(--white);border:1px solid var(--line);border-radius:var(--r-s);padding:4px 16px}
+.faq summary{cursor:pointer;font-weight:700;padding-block:10px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::after{content:"+";font-weight:800;color:var(--green-ink)}
+.faq details[open] summary::after{content:"–"}
+.faq p{padding-bottom:12px;color:var(--muted)}
+
+/* footer */
+.ftr{background:var(--navy);color:var(--on-navy-muted);font-size:14.5px}
+.ftr .wrap{padding-block:40px 24px;display:grid;gap:28px}
+.fcols{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.ftr h4{color:var(--white);font-size:15px;margin-bottom:8px}
+.ftr ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.ftr a{text-decoration:none}
+.ftr a:hover{color:var(--white)}
+.ftr .logo{color:var(--white)}
+.ftr .logo span{color:var(--green)}
+.ftr .tag{color:var(--white);font-weight:700;margin-top:6px}
+.ph-note{border:1px dashed rgba(255,255,255,.25);border-radius:var(--r-s);padding:8px 10px;font-size:13px}
+.ftr .bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:16px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:13px}
+
+/* browse */
+.pagehead{background:var(--white);border-bottom:1px solid var(--line)}
+.pagehead .wrap{padding-block:20px;display:grid;gap:6px}
+.crumbs{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px}
+.crumbs a{text-decoration:none}
+.crumbs a:hover{color:var(--navy)}
+.pagehead h1{font-size:clamp(24px,4vw,34px);font-weight:800}
+.browse{display:grid;gap:24px;padding-block:24px 56px}
+@media(min-width:1024px){.browse{grid-template-columns:280px 1fr;align-items:start}}
+.filters{background:var(--white);border:1px solid var(--line);border-radius:var(--r-m);padding:16px;display:grid;gap:16px}
+@media(min-width:1024px){.filters{position:sticky;top:calc(80px + env(safe-area-inset-top,0px))}}
+.filters fieldset{border:0;padding:0;margin:0;display:grid;gap:8px;min-width:0}
+.filters legend{font-weight:800;font-size:14px;margin-bottom:4px;padding:0}
+.checks{display:flex;flex-wrap:wrap;gap:6px}
+.checks label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer;background:var(--white)}
+.checks input{accent-color:var(--green-ink)}
+.checks label:has(input:checked){border-color:var(--green-ink);background:var(--ok-bg);color:var(--green-ink);font-weight:700}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fhead{display:flex;justify-content:space-between;align-items:center}
+.fhead h2{font-size:18px}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:space-between;margin-bottom:12px}
+.toolbar .count{font-weight:700}
+.toolbar .count b{color:var(--green-ink)}
+.toolbar select{width:auto}
+.active-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.active-chips button{border:1px solid var(--navy);background:var(--white);border-radius:999px;padding:4px 10px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.ftoggle{display:none}
+@media(max-width:1023px){
+  .ftoggle{display:inline-flex}
+  .filters{display:none;position:fixed;inset:0;z-index:70;border-radius:0;overflow:auto;padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+  .filters.open{display:grid;align-content:start}
+  .fapply{position:fixed;inset-inline:0;bottom:0;background:var(--white);border-top:1px solid var(--line);padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+}
+@media(min-width:1024px){.fapply,.fclose{display:none}}
+.empty{background:var(--white);border:1px dashed var(--line);border-radius:var(--r-m);padding:40px 16px;text-align:center;display:grid;gap:10px;justify-items:center}
+
+/* details */
+.det{display:grid;gap:24px;padding-block:20px 120px}
+@media(min-width:1024px){.det{grid-template-columns:minmax(0,1fr) 380px;align-items:start;padding-bottom:56px}}
+.gal{background:var(--white);border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden}
+.gal .main{aspect-ratio:4/3;max-width:100%;position:relative}
+.gal .main svg{width:100%;height:100%;display:block}
+.gal .counter{position:absolute;inset-block-end:10px;inset-inline-end:10px;background:rgba(6,22,41,.75);color:var(--white);font-size:13px;padding:2px 10px;border-radius:999px}
+.thumbs{display:flex;gap:8px;padding:10px;overflow-x:auto}
+.thumbs button{flex:none;width:84px;aspect-ratio:4/3;border:2px solid transparent;border-radius:8px;overflow:hidden;padding:0;cursor:pointer;background:var(--soft)}
+.thumbs button[aria-current="true"]{border-color:var(--green-ink)}
+.thumbs svg{width:100%;height:100%;display:block}
+.panel{background:var(--white);border:1px solid var(--line);border-radius:var(--r-m);padding:20px;display:grid;gap:14px}
+.panel h2{font-size:19px}
+.side{display:grid;gap:16px}
+@media(min-width:1024px){.side{position:sticky;top:calc(80px + env(safe-area-inset-top,0px))}}
+.dtitle h1{font-size:clamp(22px,3.6vw,30px);font-weight:800}
+.bigprice{font-size:30px;font-weight:800}
+.keyspecs{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.keyspecs div{background:var(--paper);border-radius:var(--r-s);padding:10px;display:grid;gap:2px}
+.keyspecs span{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.keyspecs span svg{width:14px;height:14px}
+.keyspecs b{font-size:15.5px}
+.vgrid{display:grid;gap:12px}
+@media(min-width:700px){.vgrid{grid-template-columns:1fr 1fr}}
+.vbox{border:1px solid var(--line);border-radius:var(--r-m);padding:16px;display:grid;gap:10px;align-content:start}
+.vbox.on{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}
+.vbox h3{font-size:16px;display:flex;gap:8px;align-items:center}
+.vbox h3 svg{width:20px;height:20px}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cats div{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:13.5px;background:var(--paper);border-radius:6px;padding:6px 8px}
+.cats i{font-style:normal;font-weight:700;font-size:12px}
+.cats .k-ok{color:var(--green-ink)} .cats .k-obs{color:var(--warn)}
+.small{font-size:13.5px;color:var(--muted)}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:start;padding:10px 8px;border-bottom:1px solid var(--soft);vertical-align:top}
+th{font-size:13px;color:var(--muted);font-weight:700}
+.kv th{width:42%;color:var(--muted);font-weight:600;font-size:14.5px}
+.seller{display:flex;gap:12px;align-items:center}
+.avatar{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;background:var(--navy);color:var(--white);font-weight:800;font-family:var(--f-en)}
+.contact{display:grid;gap:8px}
+.stickybar{display:none}
+@media(max-width:1023px){
+  .stickybar{display:flex;gap:8px;position:fixed;inset-inline:0;bottom:0;z-index:40;background:var(--white);border-top:1px solid var(--line);box-shadow:var(--sh2);padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+  .stickybar .btn{flex:1;padding:0 10px}
+  .side .contact{display:none}
+}
+.tips{font-size:14px;color:var(--muted);display:grid;gap:4px;padding-inline-start:18px;margin:0}
+
+/* wizard */
+.wiz{max-width:760px;margin-inline:auto;padding-block:24px 56px;display:grid;gap:16px}
+.progress{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;list-style:none;padding:0;margin:0}
+.progress li{display:grid;gap:6px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.progress li::before{content:"";height:6px;border-radius:3px;background:var(--line)}
+.progress li.done::before,.progress li.cur::before{background:var(--green)}
+.progress li.cur{color:var(--navy)}
+@media(max-width:560px){.progress li span{display:none}.progress li.cur span{display:inline}}
+.fgrid{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+.fgrid .full{grid-column:1/-1}
+@media(max-width:560px){.fgrid{grid-template-columns:1fr}}
+.wnav{display:flex;justify-content:space-between;gap:8px}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.photos div{aspect-ratio:4/3;border-radius:8px;border:1px dashed var(--line);display:grid;place-items:center;font-size:12px;color:var(--muted);text-align:center;padding:4px;background:var(--paper)}
+.photos div.has{border-style:solid;padding:0;overflow:hidden}
+.photos svg{width:100%;height:100%}
+.notice{border-radius:var(--r-s);padding:12px 14px;font-size:14.5px;display:flex;gap:10px;align-items:flex-start}
+.notice svg{width:18px;height:18px;margin-top:4px}
+.n-info{background:var(--info-bg);color:var(--info)}
+.n-warn{background:var(--warn-bg);color:var(--warn)}
+
+/* dashboard */
+.dash{display:grid;min-height:70vh;grid-template-columns:minmax(0,1fr)}
+.rail{min-width:0}
+@media(min-width:1024px){.dash{grid-template-columns:240px minmax(0,1fr)}}
+.rail{background:var(--navy);color:var(--on-navy-muted);padding:16px}
+.rail .who{display:flex;gap:10px;align-items:center;color:var(--white);padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:8px}
+.rail .who .avatar{background:var(--green);color:var(--navy)}
+.rail .who small{display:block;color:var(--on-navy-muted);font-size:12px}
+.rail nav{display:grid;gap:2px}
+.rail button{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-radius:var(--r-s);font-weight:600}
+.rail button:hover{color:var(--white);background:rgba(255,255,255,.06)}
+.rail button[aria-current="true"]{background:var(--navy-2);color:var(--white);box-shadow:inset 3px 0 0 var(--lime)}
+html[dir="rtl"] .rail button[aria-current="true"]{box-shadow:inset -3px 0 0 var(--lime)}
+.rail button:focus-visible{outline:2px solid var(--lime)}
+.rail .cnt{background:var(--gold);color:var(--navy);border-radius:999px;font-size:12px;padding:0 8px;font-weight:800}
+@media(max-width:1023px){.rail nav{display:flex;overflow-x:auto}.rail button{white-space:nowrap}.rail .who{border:0;margin:0}}
+.dmain{padding:20px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px));display:grid;gap:20px;align-content:start;min-width:0}
+@media(min-width:768px){.dmain{padding:28px 32px 56px}}
+.dmain h1{font-size:24px;font-weight:800}
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.kpi{background:var(--white);border:1px solid var(--line);border-radius:var(--r-m);padding:14px 16px;display:grid;gap:2px}
+.kpi span{font-size:13px;color:var(--muted);font-weight:600}
+.kpi b{font-size:26px;font-weight:800}
+.kpi small{font-size:12px;color:var(--muted)}
+.kpi.attn{border-color:var(--gold);background:linear-gradient(var(--gold-bg),var(--white))}
+.box{background:var(--white);border:1px solid var(--line);border-radius:var(--r-m);padding:16px;display:grid;gap:12px;min-width:0}
+.box h2{font-size:17px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tabs button{border:1px solid var(--line);background:var(--white);border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--navy);color:var(--white);border-color:var(--navy)}
+.qrow{display:grid;gap:10px;grid-template-columns:88px minmax(0,1fr);align-items:center;padding-block:12px;border-bottom:1px solid var(--soft)}
+.qrow:last-child{border:0}
+.qrow .thumb{aspect-ratio:4/3;border-radius:8px;overflow:hidden;background:var(--soft)}
+.qrow .thumb svg{width:100%;height:100%;display:block}
+.qrow .acts{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+@media(min-width:900px){.qrow{grid-template-columns:88px minmax(0,1fr) auto}.qrow .acts{grid-column:auto}}
+.qrow h3{font-size:15.5px}
+.qrow .m{font-size:13px;color:var(--muted)}
+.rejectbox{display:flex;gap:6px;flex-wrap:wrap;width:100%}
+.rejectbox select{flex:1;min-width:180px}
+.audit{font-size:13.5px;display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.audit li{display:flex;gap:8px;color:var(--muted)}
+.audit time{color:var(--ink);font-weight:700;white-space:nowrap}
+
+/* toast */
+.toast{position:fixed;z-index:90;inset-inline:0;bottom:calc(84px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;pointer-events:none;padding-inline:16px}
+.toast div{background:var(--navy);color:var(--white);padding:12px 16px;border-radius:var(--r-s);box-shadow:var(--sh2);max-width:560px;font-size:14.5px;display:flex;gap:8px;align-items:flex-start;opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s}
+.toast div.show{opacity:1;transform:none}
+.toast svg{color:var(--lime);width:18px;height:18px;margin-top:3px}
+@media(min-width:1024px){.toast{bottom:24px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="demobar"><div class="wrap">
+  <span><strong id="t-demo">نسخة عرض تصميمية</strong> · <span id="t-demo2">بيانات وأسعار توضيحية</span></span>
+  <nav aria-label="Demo screens" id="demonav"></nav>
+</div></div>
+
+<header class="hdr"><div class="wrap">
+  <a class="logo" href="#home"><img class="logo-img" data-logo alt="CarGawy كار جاوي" width="56" height="56"></a>
+  <nav class="mainnav" id="mainnav" aria-label="Main"></nav>
+  <div class="hdr-end">
+    <button class="langbtn" id="langbtn" type="button">EN</button>
+    <a class="iconbtn" href="#account" id="acctbtn" aria-label="Account"></a>
+    <a class="btn btn-primary btn-sell" href="#sell" id="t-sellbtn">بيع عربيتك</a>
+    <button class="iconbtn menubtn" id="menubtn" type="button" aria-expanded="false" aria-controls="mainnav" aria-label="Menu"></button>
+  </div>
+</div></header>
+
+<main id="app" tabindex="-1"></main>
+<footer class="ftr" id="footer"></footer>
+<div class="toast" aria-live="polite"><div id="toast"></div></div>
+
+<script>
+(function(){
+const LOGO='data:image/webp;base64,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';
+/* ---------- icons ---------- */
+const I={
+ shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>',
+ doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>',
+ clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+ pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+ gauge:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/></svg>',
+ gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="12" cy="18" r="2"/><path d="M6 8v8M12 8v8M18 8v4H6"/></svg>',
+ fuel:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M4 10h10"/><path d="M14 8l3 3v6a1.5 1.5 0 0 0 3 0V8l-3-3"/></svg>',
+ cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+ heart:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-9-9A4.8 4.8 0 0 1 12 6a4.8 4.8 0 0 1 9 5c-2 4.6-9 9-9 9z"/></svg>',
+ wa:'<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.6a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>',
+ phone:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L14 12l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>',
+ menu:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+ user:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
+ filter:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>',
+ x:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+ check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+ minus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12"/></svg>',
+ info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>',
+ eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+ star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>',
+ chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>'
+};
+
+/* ---------- i18n ---------- */
+const T={
+ar:{demo:'نسخة عرض تصميمية',demo2:'بيانات وأسعار توضيحية',logo:'شعار مؤقت',
+ scr:{home:'الرئيسية',cars:'تصفح',car:'تفاصيل سيارة',sell:'بيع عربيتك',account:'لوحة البائع',admin:'لوحة الإدارة'},
+ nav:{cars:'سيارات للبيع',dealers:'المعارض',insp:'الفحص الفني',legal:'مراجعة الأوراق',blog:'المدونة'},
+ sell:'بيع عربيتك',browse:'تصفح العربيات',
+ eyebrow:'سوق السيارات المستعملة في مصر',
+ h1:'عربيتك تستاهل..<br><em>اختارها على نور!</em>',
+ lede:'إعلانات من أفراد ومعارض موثّقة ومخزون CarGawy، مع فحص فني ومراجعة أوراق تقدر تشوف نتيجتها قبل ما تتصل.',
+ heroNote:'رسم توضيحي — يُستبدل بصورة حقيقية',
+ f:{make:'الماركة',model:'الموديل',any:'الكل',pmin:'أقل سعر',pmax:'أعلى سعر',year:'من سنة',gov:'المحافظة',search:'ابحث'},
+ brands:'تصفح حسب الماركة',featured:'سيارات مميزة',featuredSub:'مختارة من فريق CarGawy. كل شارة فحص هنا وراها تقرير فحص مسجّل.',all:'شوف كل العربيات',
+ latest:'أحدث الإعلانات',
+ why:'ليه CarGawy؟',
+ whyItems:[['shield','فحص مستقل','شارة «تم الفحص» بتظهر بس بعد فحص فعلي مسجّل ومعتمد من مدير غير الفاحص.'],['doc','مراجعة أوراق','خدمة منفصلة لمراجعة الرخصة والمستندات، ونتيجتها بتظهر لوحدها.'],['eye','مصدر كل معلومة','بنكتب جنب كل حالة: دي إقرار البائع ولا نتيجة فحص CarGawy.'],['chat','تواصل مباشر','واتساب أو مكالمة مع البائع أو المعرض من غير وسيط.']],
+ trustT:'إحنا فحصنا إيه؟ وإيه اللي لأ؟',trustS:'خدمتين منفصلتين. الموافقة على نشر الإعلان مش فحص، ومراجعة الأوراق مش فحص فني.',
+ inspT:'الفحص الفني',legalT:'مراجعة الأوراق',
+ inc:'بيشمل',exc:'مش بيشمل',
+ inspInc:['المحرك والفتيس','الشاسيه والدهان','الكهرباء والتكييف','الفرامل والإطارات'],
+ inspExc:['ضمان على الأعطال المستقبلية','فك أجزاء المحرك','سجل الصيانة غير المقدم'],
+ legalInc:['مطابقة بيانات الرخصة','التوكيلات المقدمة','المستندات الناقصة'],
+ legalExc:['ضمان قانوني لعملية البيع','مخالفات غير مُفصح عنها **(يحدد المستشار القانوني)**'],
+ inspRule:'الشارة بتتلغي تلقائياً بعد انتهاء صلاحية الفحص.',legalRule:'نتيجة المراجعة مش بتدي شارة فحص.',
+ how:'إزاي تشتري من CarGawy',
+ steps:[['دوّر وفلتر','اختار الماركة والسعر والمحافظة، وشوف الإعلانات اللي عليها فحص.'],['اقرا التفاصيل','كل معلومة عليها مصدرها، ونتيجة الفحص والأوراق في مكان واحد.'],['كلّم البائع','واتساب أو مكالمة أو رسالة. وتقدر تطلب فحص لو العربية مش مفحوصة.']],
+ bandT:'عندك عربية عايز تبيعها؟',bandS:'أضف إعلانك في دقايق. فريقنا بيراجعه قبل النشر، وتقدر تطلب فحص يرفع ثقة المشتري.',
+ blog:'من المدونة',blogSub:'موضوعات مقترحة من خطة المحتوى — تُكتب وتُراجع قبل النشر.',draft:'موضوع مقترح',
+ posts:[['دليل شراء سيارة مستعملة في مصر','أدلة الشراء'],['إزاي تعرف العربية راشة أو فابريكا؟','الفحص الفني'],['الأوراق المطلوبة لنقل ملكية سيارة في مصر','نصائح قانونية']],
+ faq:'أسئلة شائعة',
+ faqs:[['يعني إيه «تم الفحص بواسطة CarGawy»؟','إن العربية اتفحصت فعلاً بواسطة فاحص من CarGawy، والنتيجة اتسجلت واعتمدها مدير مختلف عن الفاحص. الشارة ليها تاريخ صلاحية.'],['هل CarGawy بتضمن العربية؟','لا. الفحص بيوصف حالة العربية وقت الفحص. حدود الخدمة مكتوبة في صفحة الفحص الفني.'],['الإعلان بيتنشر على طول؟','إعلانات الأفراد والمعارض بتتراجع الأول من فريق CarGawy وبعدين تتنشر.'],['إيه الفرق بين الفحص الفني ومراجعة الأوراق؟','الفحص الفني بيوصف حالة العربية الميكانيكية والهيكلية. مراجعة الأوراق بتراجع المستندات المقدمة. كل خدمة ليها نتيجة منفصلة، ومراجعة الأوراق ما بتديش شارة فحص.']],
+ fCols:{browse:'تصفح',services:'خدماتنا',company:'الشركة',legal:'قانوني',contact:'تواصل معنا'},
+ fCompany:['من نحن','اتصل بنا','الأسئلة الشائعة','قواعد الإعلان'],fLegal:['سياسة الخصوصية','الشروط والأحكام','سياسة الكوكيز'],
+ contactPh:'بيانات التواصل الرسمية تُضاف من صاحب المشروع. لم نخترع أي رقم أو عنوان.',
+ rights:'© 2026 CarGawy',
+ home:'الرئيسية',carsH:'سيارات مستعملة للبيع',
+ filters:'الفلاتر',clear:'مسح الكل',show:'اعرض {n} عربية',results:'{n} عربية',sort:'ترتيب',
+ sorts:{new:'الأحدث',plow:'السعر: الأقل',phigh:'السعر: الأعلى',km:'أقل كيلومترات',year:'أحدث موديل'},
+ kmMax:'أقصى كيلومترات',trans:'ناقل الحركة',fuel:'الوقود',body:'نوع الهيكل',src:'نوع البائع',ver:'الثقة',inspOnly:'مفحوصة من CarGawy فقط',legalOnly:'أوراقها مراجَعة',
+ noRes:'مفيش عربيات بالفلاتر دي',noResS:'جرّب توسّع نطاق السعر أو تشيل فلتر.',
+ egp:'ج.م',km:'كم',neg:'قابل للتفاوض',fixed:'السعر نهائي',
+ sources:{cargawy_inventory:'مخزون CarGawy',individual_seller:'بائع فرد',dealership:'معرض'},
+ transM:{automatic:'أوتوماتيك',manual:'مانيوال',cvt:'CVT',dct:'DCT'},
+ fuelM:{petrol:'بنزين',diesel:'ديزل',hybrid:'هايبرد'},
+ bodyM:{sedan:'سيدان',hatchback:'هاتشباك',suv:'SUV / كروس أوفر'},
+ badge:'تم الفحص بواسطة CarGawy',badgeObs:'مفحوصة — بملاحظات',sched:'فحص مجدول',req:'طلب فحص',notI:'لم يتم الفحص',awaiting:'فحص بانتظار الاعتماد',
+ legalOk:'الأوراق مراجَعة',legalRev:'الأوراق قيد المراجعة',featuredC:'مميزة',sold:'مباعة',reserved:'محجوزة',
+ fav:'حفظ في المفضلة',
+ dSpecs:'المواصفات',dCond:'الحالة',dDesc:'الوصف',dVer:'الفحص والأوراق',dSeller:'البائع',dSimilar:'عربيات شبهها',
+ year:'سنة الصنع',mileage:'العداد',loc:'المكان',engine:'المحرك',color:'اللون',drive:'الدفع',seats:'المقاعد',
+ field:'البند',value:'القيمة',source:'المصدر',srcSeller:'إقرار البائع',srcInsp:'فحص CarGawy',
+ condRows:[['الحالة العامة','overall'],['الدهان','paint'],['حوادث','accident'],['سجل الصيانة','service'],['عدد الملاك','owners']],
+ inspDone:'تاريخ الفحص',validTo:'صالح حتى',outcome:'النتيجة',passed:'ناجح',passedObs:'ناجح بملاحظات',
+ cats:{engine:'المحرك',transmission:'الفتيس',chassis:'الشاسيه',exterior:'الخارجي',interior:'الداخلي',electrical:'الكهرباء',tires:'الفرامل والإطارات',accident:'آثار حوادث'},
+ ok:'سليم',obs:'ملاحظة',notChecked:'ما لم يُفحص: فك المحرك، أداء طويل المدى، أي ضمان مستقبلي.',
+ noInsp:'العربية دي لسه ما اتفحصتش. البيانات اللي فوق كلها من إقرار البائع.',reqInsp:'اطلب فحص فني',
+ inspSchedTxt:'تم جدولة فحص. النتيجة هتظهر هنا بعد الاعتماد.',inspAwaitTxt:'الفحص اتعمل ومستني اعتماد مدير غير الفاحص. الشارة مش هتظهر قبل الاعتماد.',
+ legalOkTxt:'تمت مراجعة: رخصة التسيير، مطابقة رقم الشاسيه بالرخصة. المراجعة لا تعني ضمان قانوني لعملية البيع.',legalRevTxt:'المستندات وصلت وقيد المراجعة.',legalNone:'لم تُطلب مراجعة أوراق.',
+ wa:'واتساب',call:'اتصال',showNum:'اظهر الرقم',inquiry:'ابعت استفسار',name:'الاسم',phone:'الموبايل',msg:'رسالتك',send:'إرسال',consent:'أوافق على مشاركة بياناتي مع البائع بخصوص هذا الإعلان',
+ tipsT:'نصايح أمان',tips:['عاين العربية في مكان عام وبالنهار','ما تحوّلش فلوس قبل المعاينة ونقل الملكية','اطلب فحص لو العربية مش مفحوصة'],
+ report:'الإبلاغ عن الإعلان',memberSince:'عضو منذ',verifiedDealer:'معرض موثّق',
+ toastWa:'في الموقع الحقيقي: النقرة بتتسجل كـ Lead وبعدين يفتح واتساب برسالة فيها اسم الإعلان ورابطه.',
+ toastNum:'في الموقع الحقيقي: الرقم يظهر بعد الضغط ويتسجل كتواصل. لم نضع رقماً حقيقياً.',
+ toastInq:'اتبعت استفسارك (تجريبي). ظهر في «الاستفسارات» في لوحة البائع.',toastFav:'اتحفظت في المفضلة',toastFavOff:'اتشالت من المفضلة',toastReq:'اتسجل طلب الفحص (تجريبي). شوفه في لوحة الإدارة.',
+ errName:'اكتب اسمك',errPhone:'اكتب رقم موبايل مصري صحيح يبدأ بـ 01 ومكوّن من 11 رقم',
+ wizT:'أضف عربيتك',wizS:'الإعلان بيتحفظ كمسودة تلقائياً. بعد الإرسال فريق CarGawy بيراجعه قبل النشر.',
+ wsteps:['العربية','الحالة','السعر والمكان','الصور','المراجعة'],
+ trim:'الفئة',transL:'ناقل الحركة',price:'السعر المطلوب',negL:'قابل للتفاوض',city:'المنطقة',
+ condO:'الحالة العامة',paintL:'حالة الدهان',accL:'حوادث سابقة',desc:'الوصف',
+ paintM:{original:'فابريكا بالكامل',partial:'رش جزئي',full:'رش كامل',unknown:'مش متأكد'},accM:{none:'لا يوجد',minor:'بسيطة',major:'كبيرة',unknown:'مش متأكد'},
+ condM:{excellent:'ممتازة',very_good:'جيدة جداً',good:'جيدة',fair:'مقبولة'},svcM:{full:'كامل',partial:'جزئي',none:'غير متوفر'},
+ declNote:'البيانات دي هتظهر للمشتري على إنها «إقرار البائع» لحد ما العربية تتفحص.',
+ photosHelp:'من 4 لـ 20 صورة. أول صورة هي صورة الغلاف. (الحد الأدنى سؤال مفتوح)',angles:['أمامي ¾','خلفي ¾','جانبي','الطبلون والعداد','المقاعد الأمامية','المقاعد الخلفية','الموتور','الإطارات'],
+ rulesOk:'قرأت قواعد الإعلان وأقر بصحة البيانات',back:'رجوع',next:'التالي',submit:'إرسال للمراجعة',
+ toastSub:'اتبعت للمراجعة. الحالة دلوقتي «قيد المراجعة» — جرّب توافق عليه من لوحة الإدارة.',
+ dashSeller:'لوحة البائع',sellerName:'منى (حساب تجريبي)',memberRole:'عضو — بائع فرد',
+ dNav:{overview:'نظرة عامة',cars:'عربياتي',inq:'الاستفسارات',insp:'الفحص والأوراق',settings:'الإعدادات'},
+ kViews:'مشاهدات (30 يوم)',kContacts:'تواصل (30 يوم)',kLive:'إعلانات منشورة',kPending:'قيد المراجعة',demoNums:'أرقام تجريبية',
+ st:{publish:'منشور',pending:'قيد المراجعة',draft:'مسودة',rejected:'مرفوض',sold:'مباع'},
+ car:'العربية',status:'الحالة',actions:'إجراءات',edit:'تعديل',markSold:'تم البيع',view:'عرض',
+ rejReason:'سبب الرفض',
+ inqT:'استفسارات المشترين',noInq:'مفيش استفسارات لسه. لما مشتري يبعتلك هتلاقيه هنا.',
+ dashAdmin:'لوحة إدارة CarGawy',adminName:'مدير (حساب تجريبي)',adminRole:'CarGawy Manager',
+ aNav:{overview:'نظرة عامة',pending:'بانتظار الموافقة',insp:'الفحوصات',leads:'العملاء المحتملين',audit:'سجل العمليات'},
+ kActive:'إعلانات نشطة',kPendingA:'بانتظار الموافقة',kInspOpen:'فحوصات مفتوحة',kLeads:'تواصل (7 أيام)',
+ pendingT:'إعلانات بانتظار الموافقة',approve:'موافقة ونشر',reject:'رفض',confirmReject:'تأكيد الرفض',cancel:'إلغاء',
+ reasons:['صور غير واضحة','سعر غير منطقي','بيانات ناقصة','إعلان مكرر','رقم تواصل داخل الوصف'],
+ submitted:'أُرسل',by:'بواسطة',
+ inspQ:'فحوصات تنتظر إجراء',inspector:'الفاحص',approveInsp:'اعتماد النتيجة',fourEyes:'قاعدة الاعتماد: المدير المعتمد لازم يكون غير الفاحص. الاعتماد هو اللي بيطلّع شارة «تم الفحص».',
+ noPending:'مفيش إعلانات مستنية. كله اتراجع.',noInspQ:'مفيش فحوصات مستنية اعتماد.',
+ toastApprove:'اتنشر الإعلان. سجل العمليات اتحدّث، وما اتضافتش شارة فحص.',toastReject:'اترفض الإعلان وهيظهر السبب للبائع.',toastInspOk:'اتعتمد الفحص وظهرت الشارة على الإعلان في صفحة التصفح.',
+ auditT:'آخر العمليات',leadsT:'آخر عمليات التواصل',channel:'القناة',when:'الوقت',
+ ch:{whatsapp:'واتساب',call:'اتصال',form:'استفسار'},ago:'من {n} دقيقة',now:'دلوقتي'
+},
+en:{demo:'Design demo',demo2:'Illustrative data and prices',logo:'temp. logo',
+ scr:{home:'Home',cars:'Browse',car:'Car details',sell:'Sell your car',account:'Seller dashboard',admin:'Admin dashboard'},
+ nav:{cars:'Cars for sale',dealers:'Dealers',insp:'Inspection',legal:'Legal review',blog:'Blog'},
+ sell:'Sell your car',browse:'Browse cars',
+ eyebrow:'Egypt’s used-car marketplace',
+ h1:'Your car deserves<br><em>the right choice.</em>',
+ lede:'Listings from individuals, verified dealers and CarGawy’s own stock, with technical inspection and document review results you can read before you call.',
+ heroNote:'Illustration — replace with a real photo',
+ f:{make:'Make',model:'Model',any:'Any',pmin:'Min price',pmax:'Max price',year:'From year',gov:'Governorate',search:'Search'},
+ brands:'Browse by make',featured:'Featured cars',featuredSub:'Picked by the CarGawy team. Every inspection badge here is backed by a recorded report.',all:'See all cars',
+ latest:'Latest listings',
+ why:'Why CarGawy?',
+ whyItems:[['shield','Independent inspection','The “Checked” badge appears only after a recorded inspection approved by a manager other than the inspector.'],['doc','Document review','A separate service for licence and paperwork checks, shown on its own.'],['eye','Source on every fact','Each condition item says whether it is the seller’s declaration or a CarGawy finding.'],['chat','Direct contact','WhatsApp or call the seller or dealer, no middleman.']],
+ trustT:'What did we check, and what not?',trustS:'Two separate services. Approving a listing is not an inspection, and a document review is not a technical check.',
+ inspT:'Technical inspection',legalT:'Document review',
+ inc:'Includes',exc:'Does not include',
+ inspInc:['Engine and gearbox','Chassis and paintwork','Electrical and A/C','Brakes and tyres'],
+ inspExc:['Warranty on future faults','Engine teardown','Service history not provided'],
+ legalInc:['Licence data match','Submitted powers of attorney','Missing documents'],
+ legalExc:['Legal guarantee of the sale','Undisclosed fines **(defined by counsel)**'],
+ inspRule:'The badge is removed automatically when the inspection expires.',legalRule:'A document review never grants an inspection badge.',
+ how:'How buying works',
+ steps:[['Search and filter','Pick make, price and governorate, and see which listings are inspected.'],['Read the details','Every fact shows its source; inspection and paperwork results sit together.'],['Contact the seller','WhatsApp, call or message. Request an inspection if the car has none.']],
+ bandT:'Have a car to sell?',bandS:'List it in minutes. Our team reviews it before publishing, and you can request an inspection to earn buyers’ trust.',
+ blog:'From the blog',blogSub:'Planned topics from the content plan — written and fact-checked before publishing.',draft:'Planned topic',
+ posts:[['Buying a used car in Egypt: a guide','Buying guides'],['Repainted or original? How to tell','Technical inspection'],['Documents needed to transfer car ownership in Egypt','Legal advice']],
+ faq:'Frequently asked questions',
+ faqs:[['What does “Checked by CarGawy” mean?','A CarGawy inspector physically inspected the car, the result was recorded and approved by a manager other than the inspector. The badge has an expiry date.'],['Does CarGawy guarantee the car?','No. The inspection describes the car’s condition at the time of inspection. Limits are listed on the inspection page.'],['Is my listing published immediately?','Individual and dealer listings are reviewed by the CarGawy team first.'],['What is the difference between inspection and document review?','The inspection describes the car’s mechanical and body condition. The document review checks the submitted paperwork. Each has its own result, and a document review never grants an inspection badge.']],
+ fCols:{browse:'Browse',services:'Services',company:'Company',legal:'Legal',contact:'Contact'},
+ fCompany:['About us','Contact us','FAQ','Listing rules'],fLegal:['Privacy policy','Terms & conditions','Cookie policy'],
+ contactPh:'Official contact details will be added by the owner. No phone or address has been invented.',
+ rights:'© 2026 CarGawy',
+ home:'Home',carsH:'Used cars for sale',
+ filters:'Filters',clear:'Clear all',show:'Show {n} cars',results:'{n} cars',sort:'Sort',
+ sorts:{new:'Newest',plow:'Price: low to high',phigh:'Price: high to low',km:'Lowest mileage',year:'Newest model year'},
+ kmMax:'Max mileage',trans:'Transmission',fuel:'Fuel',body:'Body type',src:'Seller type',ver:'Trust',inspOnly:'Checked by CarGawy only',legalOnly:'Documents reviewed',
+ noRes:'No cars match these filters',noResS:'Try a wider price range or remove a filter.',
+ egp:'EGP',km:'km',neg:'Negotiable',fixed:'Fixed price',
+ sources:{cargawy_inventory:'CarGawy stock',individual_seller:'Individual',dealership:'Dealer'},
+ transM:{automatic:'Automatic',manual:'Manual',cvt:'CVT',dct:'DCT'},
+ fuelM:{petrol:'Petrol',diesel:'Diesel',hybrid:'Hybrid'},
+ bodyM:{sedan:'Sedan',hatchback:'Hatchback',suv:'SUV / Crossover'},
+ badge:'Checked by CarGawy',badgeObs:'Checked — with notes',sched:'Inspection scheduled',req:'Inspection requested',notI:'Not inspected',awaiting:'Inspection awaiting approval',
+ legalOk:'Documents reviewed',legalRev:'Documents under review',featuredC:'Featured',sold:'Sold',reserved:'Reserved',
+ fav:'Save to favourites',
+ dSpecs:'Specifications',dCond:'Condition',dDesc:'Description',dVer:'Inspection & documents',dSeller:'Seller',dSimilar:'Similar cars',
+ year:'Year',mileage:'Mileage',loc:'Location',engine:'Engine',color:'Colour',drive:'Drivetrain',seats:'Seats',
+ field:'Item',value:'Value',source:'Source',srcSeller:'Seller declaration',srcInsp:'CarGawy inspection',
+ condRows:[['Overall condition','overall'],['Paintwork','paint'],['Accidents','accident'],['Service records','service'],['Owners','owners']],
+ inspDone:'Inspected on',validTo:'Valid until',outcome:'Outcome',passed:'Passed',passedObs:'Passed with observations',
+ cats:{engine:'Engine',transmission:'Gearbox',chassis:'Chassis',exterior:'Exterior',interior:'Interior',electrical:'Electrical',tires:'Brakes & tyres',accident:'Accident signs'},
+ ok:'OK',obs:'Note',notChecked:'Not checked: engine teardown, long-term reliability, any future warranty.',
+ noInsp:'This car has not been inspected yet. Everything above is the seller’s declaration.',reqInsp:'Request an inspection',
+ inspSchedTxt:'An inspection is scheduled. Results appear here after approval.',inspAwaitTxt:'Inspection done, awaiting approval by a manager other than the inspector. No badge until then.',
+ legalOkTxt:'Reviewed: vehicle licence, chassis number matches licence. This is not a legal guarantee of the sale.',legalRevTxt:'Documents received and under review.',legalNone:'No document review requested.',
+ wa:'WhatsApp',call:'Call',showNum:'Show number',inquiry:'Send an inquiry',name:'Name',phone:'Mobile',msg:'Message',send:'Send',consent:'I agree to share my details with the seller about this listing',
+ tipsT:'Safety tips',tips:['Inspect the car in a public place, in daylight','Don’t transfer money before viewing and title transfer','Request an inspection if the car has none'],
+ report:'Report this listing',memberSince:'Member since',verifiedDealer:'Verified dealer',
+ toastWa:'On the live site: the click is logged as a lead, then WhatsApp opens with the listing title and link.',
+ toastNum:'On the live site: the number is revealed and logged as a contact. No real number is used here.',
+ toastInq:'Inquiry sent (demo). It now appears under “Inquiries” in the seller dashboard.',toastFav:'Saved to favourites',toastFavOff:'Removed from favourites',toastReq:'Inspection request logged (demo). See it in the admin dashboard.',
+ errName:'Enter your name',errPhone:'Enter a valid 11-digit Egyptian mobile starting with 01',
+ wizT:'Add your car',wizS:'Your listing is saved as a draft automatically. After you submit, the CarGawy team reviews it before publishing.',
+ wsteps:['Car','Condition','Price & place','Photos','Review'],
+ trim:'Trim',transL:'Transmission',price:'Asking price',negL:'Negotiable',city:'Area',
+ condO:'Overall condition',paintL:'Paintwork',accL:'Previous accidents',desc:'Description',
+ paintM:{original:'All original',partial:'Partial repaint',full:'Full repaint',unknown:'Not sure'},accM:{none:'None',minor:'Minor',major:'Major',unknown:'Not sure'},
+ condM:{excellent:'Excellent',very_good:'Very good',good:'Good',fair:'Fair'},svcM:{full:'Full',partial:'Partial',none:'Not available'},
+ declNote:'Buyers will see these as the “seller’s declaration” until the car is inspected.',
+ photosHelp:'4 to 20 photos. The first one is the cover. (Minimum is an open question)',angles:['Front ¾','Rear ¾','Side','Dash & odometer','Front seats','Rear seats','Engine bay','Tyres'],
+ rulesOk:'I have read the listing rules and confirm the details are accurate',back:'Back',next:'Next',submit:'Submit for review',
+ toastSub:'Submitted for review. Status is “Pending” — try approving it from the admin dashboard.',
+ dashSeller:'Seller dashboard',sellerName:'Mona (demo account)',memberRole:'Member — individual seller',
+ dNav:{overview:'Overview',cars:'My cars',inq:'Inquiries',insp:'Inspection & docs',settings:'Settings'},
+ kViews:'Views (30 days)',kContacts:'Contacts (30 days)',kLive:'Published',kPending:'Pending review',demoNums:'demo figures',
+ st:{publish:'Published',pending:'Pending review',draft:'Draft',rejected:'Rejected',sold:'Sold'},
+ car:'Car',status:'Status',actions:'Actions',edit:'Edit',markSold:'Mark sold',view:'View',
+ rejReason:'Rejection reason',
+ inqT:'Buyer inquiries',noInq:'No inquiries yet. When a buyer messages you, it shows up here.',
+ dashAdmin:'CarGawy admin',adminName:'Manager (demo account)',adminRole:'CarGawy Manager',
+ aNav:{overview:'Overview',pending:'Pending approval',insp:'Inspections',leads:'Leads',audit:'Audit log'},
+ kActive:'Active listings',kPendingA:'Pending approval',kInspOpen:'Open inspections',kLeads:'Contacts (7 days)',
+ pendingT:'Listings pending approval',approve:'Approve & publish',reject:'Reject',confirmReject:'Confirm rejection',cancel:'Cancel',
+ reasons:['Unclear photos','Unrealistic price','Incomplete data','Duplicate listing','Contact number in description'],
+ submitted:'Submitted',by:'by',
+ inspQ:'Inspections needing action',inspector:'Inspector',approveInsp:'Approve result',fourEyes:'Approval rule: the approving manager must be someone other than the inspector. Approval is what issues the “Checked” badge.',
+ noPending:'Nothing waiting. All listings reviewed.',noInspQ:'No inspections awaiting approval.',
+ toastApprove:'Listing published. Audit log updated; no inspection badge was added.',toastReject:'Listing rejected; the seller will see the reason.',toastInspOk:'Inspection approved; the badge now shows on the listing.',
+ auditT:'Recent activity',leadsT:'Recent contacts',channel:'Channel',when:'When',
+ ch:{whatsapp:'WhatsApp',call:'Call',form:'Inquiry'},ago:'{n} min ago',now:'just now'
+}};
+
+const MAKES={hyundai:['Hyundai','هيونداي'],kia:['Kia','كيا'],toyota:['Toyota','تويوتا'],nissan:['Nissan','نيسان'],mg:['MG','إم جي'],chery:['Chery','شيري'],chevrolet:['Chevrolet','شيفروليه'],renault:['Renault','رينو'],peugeot:['Peugeot','بيجو'],skoda:['Skoda','سكودا'],bmw:['BMW','بي إم دبليو'],mitsubishi:['Mitsubishi','ميتسوبيشي'],suzuki:['Suzuki','سوزوكي'],fiat:['Fiat','فيات']};
+const GOVS={cairo:['Cairo','القاهرة'],giza:['Giza','الجيزة'],alex:['Alexandria','الإسكندرية'],qalyubia:['Qalyubia','القليوبية']};
+const CITIES={nasr:['Nasr City','مدينة نصر'],zayed:['Sheikh Zayed','الشيخ زايد'],smouha:['Smouha','سموحة'],maadi:['Maadi','المعادي'],newcairo:['New Cairo','القاهرة الجديدة'],october:['6th of October','6 أكتوبر'],banha:['Banha','بنها'],shubra:['Shubra','شبرا'],dokki:['Dokki','الدقي'],miami:['Miami','ميامي'],zamalek:['Zamalek','الزمالك'],helwan:['Helwan','حلوان'],haram:['Haram','الهرم']};
+const COLORS={silver:['#C3C9D0','Silver','فضي'],white:['#F4F5F3','White','أبيض'],black:['#1E242B','Black','أسود'],red:['#A8322D','Red','أحمر'],blue:['#2D5F8A','Blue','أزرق'],grey:['#7C858C','Grey','رمادي'],green:['#3E6B57','Green','أخضر'],beige:['#CDBB9A','Beige','بيج']};
+
+/* status: publish|pending|rejected ; insp: {s:'none'|'requested'|'scheduled'|'completed', o:'passed'|'obs', approved:bool, date, valid, cats:{}}; legal:'none'|'review'|'approved' */
+let CARS=[
+ {id:1,mk:'hyundai',md:'Elantra AD',trim:'Smart',y:2019,km:92000,p:785000,neg:1,tr:'automatic',fu:'petrol',bd:'sedan',gv:'cairo',ct:'nasr',src:'cargawy_inventory',col:'silver',cc:1600,feat:1,st:'publish',insp:{s:'completed',o:'passed',approved:1,date:'2026-10-21',valid:'2027-01-19',inspector:'Karim'},legal:'approved',seller:'CarGawy',days:2,cond:{overall:'very_good',paint:'original',accident:'none',service:'full',owners:1}},
+ {id:2,mk:'kia',md:'Cerato',trim:'Top line',y:2020,km:68000,p:865000,neg:1,tr:'automatic',fu:'petrol',bd:'sedan',gv:'giza',ct:'zayed',src:'dealership',col:'white',cc:1600,feat:0,st:'publish',insp:{s:'scheduled'},legal:'review',seller:'Example Motors',sellerAr:'معرض تجريبي للسيارات',days:3,cond:{overall:'very_good',paint:'partial',accident:'minor',service:'partial',owners:2}},
+ {id:3,mk:'toyota',md:'Corolla',trim:'XLi',y:2018,km:120000,p:760000,neg:0,tr:'automatic',fu:'petrol',bd:'sedan',gv:'alex',ct:'smouha',src:'individual_seller',col:'grey',cc:1600,feat:0,st:'publish',insp:{s:'none'},legal:'none',seller:'Hesham',sellerAr:'هشام',days:5,cond:{overall:'good',paint:'unknown',accident:'unknown',service:'none',owners:2}},
+ {id:4,mk:'nissan',md:'Sunny',trim:'Super Saloon',y:2021,km:45000,p:590000,neg:1,tr:'automatic',fu:'petrol',bd:'sedan',gv:'cairo',ct:'maadi',src:'individual_seller',col:'blue',cc:1500,feat:0,st:'publish',insp:{s:'completed',o:'obs',approved:1,date:'2026-10-02',valid:'2026-12-31',inspector:'Omar'},legal:'none',seller:'Mona',sellerAr:'منى',mine:1,days:9,views:412,contacts:23,cond:{overall:'very_good',paint:'partial',accident:'none',service:'full',owners:1}},
+ {id:5,mk:'mg',md:'ZS',trim:'Luxury',y:2022,km:38000,p:980000,neg:0,tr:'automatic',fu:'petrol',bd:'suv',gv:'cairo',ct:'newcairo',src:'dealership',col:'red',cc:1500,feat:1,st:'publish',insp:{s:'completed',o:'passed',approved:1,date:'2026-10-28',valid:'2027-01-26',inspector:'Karim'},legal:'approved',seller:'Example Motors',sellerAr:'معرض تجريبي للسيارات',days:1,cond:{overall:'excellent',paint:'original',accident:'none',service:'full',owners:1}},
+ {id:6,mk:'chery',md:'Tiggo 7 Pro',trim:'Highline',y:2023,km:25000,p:1250000,neg:1,tr:'dct',fu:'petrol',bd:'suv',gv:'giza',ct:'october',src:'cargawy_inventory',col:'black',cc:1600,feat:1,st:'publish',insp:{s:'completed',o:'passed',approved:1,date:'2026-11-01',valid:'2027-01-30',inspector:'Omar'},legal:'approved',seller:'CarGawy',days:1,cond:{overall:'excellent',paint:'original',accident:'none',service:'full',owners:1}},
+ {id:7,mk:'chevrolet',md:'Optra',trim:'',y:2017,km:135000,p:395000,neg:1,tr:'manual',fu:'petrol',bd:'sedan',gv:'qalyubia',ct:'banha',src:'individual_seller',col:'white',cc:1600,feat:0,st:'publish',insp:{s:'none'},legal:'none',seller:'Mahmoud',sellerAr:'محمود',days:6,cond:{overall:'good',paint:'partial',accident:'minor',service:'partial',owners:3}},
+ {id:8,mk:'renault',md:'Logan',trim:'',y:2016,km:160000,p:340000,neg:1,tr:'manual',fu:'petrol',bd:'sedan',gv:'cairo',ct:'shubra',src:'individual_seller',col:'beige',cc:1600,feat:0,st:'publish',insp:{s:'none'},legal:'none',seller:'Sameh',sellerAr:'سامح',days:12,cond:{overall:'fair',paint:'full',accident:'minor',service:'none',owners:3}},
+ {id:9,mk:'peugeot',md:'3008',trim:'Allure',y:2020,km:74000,p:1550000,neg:0,tr:'automatic',fu:'petrol',bd:'suv',gv:'cairo',ct:'newcairo',src:'dealership',col:'grey',cc:1600,feat:1,st:'publish',insp:{s:'completed',o:'passed',approved:0,date:'2026-11-05',valid:'2027-02-03',inspector:'Karim'},legal:'none',seller:'Example Motors',sellerAr:'معرض تجريبي للسيارات',days:2,cond:{overall:'very_good',paint:'original',accident:'none',service:'full',owners:1}},
+ {id:10,mk:'skoda',md:'Octavia A8',trim:'Style',y:2021,km:60000,p:1290000,neg:1,tr:'dct',fu:'petrol',bd:'sedan',gv:'giza',ct:'dokki',src:'cargawy_inventory',col:'white',cc:1400,feat:0,st:'publish',insp:{s:'completed',o:'passed',approved:1,date:'2026-10-15',valid:'2027-01-13',inspector:'Omar'},legal:'approved',seller:'CarGawy',days:4,cond:{overall:'excellent',paint:'original',accident:'none',service:'full',owners:1}},
+ {id:11,mk:'kia',md:'Picanto',trim:'',y:2019,km:70000,p:470000,neg:1,tr:'automatic',fu:'petrol',bd:'hatchback',gv:'alex',ct:'miami',src:'individual_seller',col:'red',cc:1200,feat:0,st:'publish',insp:{s:'requested'},legal:'none',seller:'Nour',sellerAr:'نور',days:3,cond:{overall:'very_good',paint:'original',accident:'none',service:'partial',owners:1}},
+ {id:12,mk:'bmw',md:'320i',trim:'Sport Line',y:2017,km:110000,p:1650000,neg:1,tr:'automatic',fu:'petrol',bd:'sedan',gv:'cairo',ct:'zamalek',src:'dealership',col:'black',cc:2000,feat:0,st:'publish',insp:{s:'none'},legal:'approved',seller:'Example Motors',sellerAr:'معرض تجريبي للسيارات',days:7,cond:{overall:'very_good',paint:'partial',accident:'none',service:'full',owners:2}},
+ {id:13,mk:'hyundai',md:'Tucson',trim:'GL',y:2019,km:98000,p:1150000,neg:1,tr:'automatic',fu:'petrol',bd:'suv',gv:'cairo',ct:'helwan',src:'individual_seller',col:'blue',cc:2000,feat:0,st:'pending',insp:{s:'none'},legal:'none',seller:'Tarek',sellerAr:'طارق',days:0,subMin:38,cond:{overall:'good',paint:'partial',accident:'minor',service:'partial',owners:2}},
+ {id:14,mk:'mitsubishi',md:'Lancer',trim:'Shark',y:2015,km:150000,p:450000,neg:1,tr:'automatic',fu:'petrol',bd:'sedan',gv:'giza',ct:'haram',src:'individual_seller',col:'silver',cc:1600,feat:0,st:'pending',insp:{s:'none'},legal:'none',seller:'Mona',sellerAr:'منى',mine:1,days:0,subMin:95,cond:{overall:'good',paint:'unknown',accident:'unknown',service:'none',owners:3}},
+ {id:15,mk:'suzuki',md:'Swift',trim:'GLX',y:2020,km:52000,p:560000,neg:0,tr:'automatic',fu:'petrol',bd:'hatchback',gv:'cairo',ct:'nasr',src:'dealership',col:'green',cc:1200,feat:0,st:'pending',insp:{s:'none'},legal:'none',seller:'Example Motors',sellerAr:'معرض تجريبي للسيارات',days:0,subMin:140,cond:{overall:'very_good',paint:'original',accident:'none',service:'full',owners:1}},
+ {id:16,mk:'fiat',md:'Tipo',trim:'',y:2018,km:88000,p:480000,neg:1,tr:'manual',fu:'petrol',bd:'sedan',gv:'cairo',ct:'maadi',src:'individual_seller',col:'white',cc:1600,feat:0,st:'rejected',rej:0,insp:{s:'none'},legal:'none',seller:'Mona',sellerAr:'منى',mine:1,days:4,cond:{overall:'good',paint:'partial',accident:'none',service:'partial',owners:2}}
+];
+let INQ=[];
+let AUDIT=[{t:12,a:{ar:'اعتماد فحص سيارة #6 — Omar فحص، المدير اعتمد',en:'Inspection approved for car #6 — inspected by Omar, approved by manager'}},{t:47,a:{ar:'رفض إعلان #16 — صور غير واضحة',en:'Listing #16 rejected — unclear photos'}},{t:95,a:{ar:'إرسال إعلان #14 للمراجعة',en:'Listing #14 submitted for review'}}];
+let LEADS=[{car:5,ch:'whatsapp',t:4},{car:1,ch:'call',t:11},{car:6,ch:'form',t:26},{car:4,ch:'whatsapp',t:33},{car:10,ch:'whatsapp',t:52}];
+let FAVS=new Set();
+
+let lang='ar';
+try{const s=localStorage.getItem('cg-lang');if(s==='en'||s==='ar')lang=s}catch(e){}
+const L=()=>T[lang];
+const nm=(m,k)=>m[k]?(lang==='ar'?m[k][1]:m[k][0]):k;
+const fmt=n=>Number(n).toLocaleString('en-US');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const md=s=>s.replace(/\*\*(.+?)\*\*/g,'<em class="small">$1</em>');
+const title=c=>`<bdi>${nm(MAKES,c.mk)} ${c.md}${c.trim?' '+c.trim:''}</bdi>`;
+const priceH=c=>lang==='ar'?`${fmt(c.p)} <small>${L().egp}</small>`:`<small>${L().egp}</small> ${fmt(c.p)}`;
+const hasBadge=c=>c.insp.s==='completed'&&c.insp.approved&&(c.insp.o==='passed'||c.insp.o==='obs');
+const sellerName=c=>lang==='ar'&&c.sellerAr?c.sellerAr:c.seller;
+const pub=()=>CARS.filter(c=>c.st==='publish');
+
+/* ---------- car illustration ---------- */
+function shade(hex,amt){const n=parseInt(hex.slice(1),16);let r=(n>>16)+amt,g=(n>>8&255)+amt,b=(n&255)+amt;r=Math.max(0,Math.min(255,r));g=Math.max(0,Math.min(255,g));b=Math.max(0,Math.min(255,b));return '#'+((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1)}
+let gid=0;
+function carSVG(c,view){
+  const col=COLORS[c.col][0],dk=shade(col,-45),lt=shade(col,40);const id='g'+(gid++);
+  const bg=view===2?['#142B35','#061629']:['#F7F9F8','#E2E8E5'];
+  let body,win;
+  if(c.bd==='suv'){body='M38 196 Q38 166 62 160 L112 152 L146 104 Q152 96 166 96 L296 96 Q312 96 320 108 L346 152 Q374 158 374 184 L374 208 Q374 218 362 218 L48 218 Q38 218 38 208 Z';win='<path d="M154 150 L176 108 L238 108 L238 150 Z"/><path d="M248 108 L298 108 Q308 108 313 116 L332 150 L248 150 Z"/>'}
+  else if(c.bd==='hatchback'){body='M48 200 Q48 172 74 166 L120 158 Q156 116 196 112 L276 112 Q302 112 318 132 L348 168 Q368 172 368 194 L368 210 Q368 218 358 218 L56 218 Q48 218 48 210 Z';win='<path d="M134 158 Q162 124 196 122 L222 122 L222 158 Z"/><path d="M232 122 L274 122 Q294 122 306 136 L326 158 L232 158 Z"/>'}
+  else{body='M34 200 Q36 176 64 170 L128 162 Q164 124 206 121 L268 123 Q298 127 328 160 L360 168 Q376 172 376 196 L376 210 Q376 218 366 218 L44 218 Q34 218 34 210 Z';win='<path d="M142 162 Q172 132 206 130 L216 130 L216 162 Z"/><path d="M226 130 L266 131 Q290 135 312 162 L226 162 Z"/>'}
+  const mir=view===1?' transform="translate(410 0) scale(-1 1)"':'';
+  return `<svg viewBox="0 0 410 300" role="img" aria-label="${esc(nm(MAKES,c.mk)+' '+c.md)}" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="${id}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${bg[0]}"/><stop offset="1" stop-color="${bg[1]}"/></linearGradient><linearGradient id="${id}c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${lt}"/><stop offset=".55" stop-color="${col}"/><stop offset="1" stop-color="${dk}"/></linearGradient></defs><rect width="410" height="300" fill="url(#${id}b)"/><rect y="232" width="410" height="68" fill="${view===2?'#0B1F2E':'#D7DFDB'}"/><ellipse cx="205" cy="236" rx="180" ry="10" fill="#061629" opacity=".18"/><g${mir}><path d="${body}" fill="url(#${id}c)" stroke="${dk}" stroke-width="1.5"/><g fill="#1B2A36" opacity=".88">${win}</g><path d="M60 192 L360 190" stroke="${lt}" stroke-width="2" opacity=".6"/><rect x="352" y="176" width="16" height="7" rx="3" fill="#F2D27A"/><rect x="40" y="180" width="12" height="7" rx="3" fill="#C2423A"/>${[110,302].map(x=>`<circle cx="${x}" cy="218" r="29" fill="#141B21"/><circle cx="${x}" cy="218" r="16" fill="#9AA5AD"/><circle cx="${x}" cy="218" r="5" fill="#141B21"/>`).join('')}</g></svg>`;
+}
+
+/* ---------- shared bits ---------- */
+function inspChip(c){
+  if(hasBadge(c))return c.insp.o==='obs'?`<span class="chip c-ok">${I.shield}${L().badgeObs}</span>`:`<span class="chip c-badge">${I.shield}${L().badge}</span>`;
+  if(c.insp.s==='completed')return `<span class="chip c-warn">${I.clock}${L().awaiting}</span>`;
+  if(c.insp.s==='scheduled')return `<span class="chip c-info">${I.clock}${L().sched}</span>`;
+  if(c.insp.s==='requested')return `<span class="chip c-info">${I.clock}${L().req}</span>`;
+  return `<span class="chip c-neutral">${L().notI}</span>`;
+}
+function legalChip(c){
+  if(c.legal==='approved')return `<span class="chip c-info">${I.doc}${L().legalOk}</span>`;
+  if(c.legal==='review')return `<span class="chip c-neutral">${I.doc}${L().legalRev}</span>`;
+  return '';
+}
+function srcChip(c){
+  if(c.src==='cargawy_inventory')return `<span class="chip c-navy">${L().sources[c.src]}</span>`;
+  return `<span class="chip c-neutral">${L().sources[c.src]}</span>`;
+}
+function card(c){
+  return `<article class="card"><div class="ph">${carSVG(c,0)}<div class="tl">${srcChip(c)}${c.feat?`<span class="chip c-gold">${I.star}${L().featuredC}</span>`:''}</div></div>
+  <button class="fav" type="button" data-fav="${c.id}" aria-pressed="${FAVS.has(c.id)}" aria-label="${L().fav}">${I.heart}</button>
+  <div class="bd"><h3>${title(c)}</h3>
+  <div class="specs num"><span>${I.cal}${c.y}</span><span>${I.gauge}${fmt(c.km)} ${L().km}</span><span>${I.gear}${L().transM[c.tr]}</span></div>
+  <div class="specs"><span>${I.pin}${nm(CITIES,c.ct)}، ${nm(GOVS,c.gv)}</span></div>
+  <div class="price num">${priceH(c)}</div>
+  <div class="ver">${inspChip(c)}${legalChip(c)}</div></div>
+  <a class="cover" href="#car-${c.id}" aria-label="${esc(nm(MAKES,c.mk)+' '+c.md+' '+c.y)}"></a></article>`;
+}
+function opts(map,sel,anyLabel){return (anyLabel!==undefined?`<option value="">${anyLabel}</option>`:'')+Object.keys(map).map(k=>`<option value="${k}"${k===sel?' selected':''}>${nm(map,k)}</option>`).join('')}
+function toast(msg){const t=document.getElementById('toast');t.innerHTML=I.info+'<span>'+msg+'</span>';t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),4200)}
+const t=(s,o)=>s.replace(/\{(\w+)\}/g,(_,k)=>o[k]);
+
+/* ---------- chrome ---------- */
+function chrome(route){
+  const l=L();
+  document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+  document.getElementById('t-demo').textContent=l.demo;document.getElementById('t-demo2').textContent=l.demo2;
+  document.getElementById('t-sellbtn').textContent=l.sell;
+  document.getElementById('langbtn').textContent=lang==='ar'?'EN':'عربي';
+  document.getElementById('langbtn').setAttribute('aria-label',lang==='ar'?'Switch to English':'التبديل إلى العربية');
+  document.getElementById('acctbtn').innerHTML=I.user;document.getElementById('menubtn').innerHTML=I.menu;
+  const scr=[['home','home'],['cars','cars'],['car-1','car'],['sell','sell'],['account','account'],['admin','admin']];
+  document.getElementById('demonav').innerHTML=scr.map(([h,k])=>`<a href="#${h}"${(route===k||(k==='car'&&route==='car'))?' aria-current="page"':''}>${l.scr[k]}</a>`).join('');
+  const n=l.nav;
+  document.getElementById('mainnav').innerHTML=`<a href="#cars"${route==='cars'?' aria-current="page"':''}>${n.cars}</a><a href="#home" data-soon="1">${n.dealers}</a><a href="#home" data-anchor="trust">${n.insp}</a><a href="#home" data-anchor="trust">${n.legal}</a><a href="#home" data-anchor="blog">${n.blog}</a><a href="#sell" class="mob-only">${l.sell}</a>`;
+  footer();
+  document.querySelectorAll('img[data-logo]').forEach(i=>{if(!i.src)i.src=LOGO});
+}
+function footer(){
+  const l=L();
+  const top=['hyundai','kia','toyota','nissan','mg','chery'];
+  document.getElementById('footer').innerHTML=`<div class="wrap"><div class="fcols">
+   <div><a class="logo" href="#home"><img class="logo-img" data-logo alt="CarGawy كار جاوي" width="120" height="120" loading="lazy"></a><p class="tag">${lang==='ar'?'عربيتك تستاهل.. اختارها على نور!':'Your Car Deserves the Right Choice.'}</p></div>
+   <div><h4>${l.fCols.browse}</h4><ul>${top.map(m=>`<li><a href="#cars" data-make="${m}">${nm(MAKES,m)}</a></li>`).join('')}</ul></div>
+   <div><h4>${l.fCols.services}</h4><ul><li><a href="#home">${l.inspT}</a></li><li><a href="#home">${l.legalT}</a></li><li><a href="#sell">${l.sell}</a></li></ul></div>
+   <div><h4>${l.fCols.company}</h4><ul>${l.fCompany.map(x=>`<li><a href="#home">${x}</a></li>`).join('')}</ul></div>
+   <div><h4>${l.fCols.contact}</h4><p class="ph-note">${l.contactPh}</p></div>
+  </div><div class="bottom"><span>${l.rights}</span><span>${l.fLegal.join(' · ')}</span></div></div>`;
+}
+
+/* ---------- views ---------- */
+function vHome(){
+  const l=L(),f=l.f,P=pub();
+  const makes={};P.forEach(c=>makes[c.mk]=(makes[c.mk]||0)+1);
+  const feat=P.filter(c=>c.feat).slice(0,4);
+  const latest=[...P].sort((a,b)=>a.days-b.days).filter(c=>!c.feat).slice(0,4);
+  const lst=(arr,cls)=>arr.map(x=>`<li class="${cls}">${cls==='yes'?I.check:I.minus}<span>${md(x)}</span></li>`).join('');
+  const hero=CARS.find(c=>c.id===6);
+  return `<section class="hero dark"><div class="wrap">
+   <div><p class="eyebrow">${l.eyebrow}</p><h1>${l.h1}</h1><p class="lede">${l.lede}</p>
+   <div class="hero-ctas"><a class="btn btn-primary btn-l" href="#cars">${l.browse}</a><a class="btn btn-ghost-dark btn-l" href="#sell">${l.sell}</a></div></div>
+   <div class="hero-art">${carSVG(hero,2)}<p class="note">${l.heroNote}</p></div>
+  </div></section>
+  <div class="wrap searchwrap"><form class="searchpanel" id="heroSearch">
+   <div class="field"><label for="hs-make">${f.make}</label><select class="input" id="hs-make">${opts(MAKES,'',f.any)}</select></div>
+   <div class="field"><label for="hs-model">${f.model}</label><select class="input" id="hs-model"><option value="">${f.any}</option></select></div>
+   <div class="field"><label for="hs-pmax">${f.pmax}</label><select class="input num" id="hs-pmax"><option value="">${f.any}</option>${[500000,800000,1000000,1500000,2000000].map(v=>`<option value="${v}">${fmt(v)}</option>`).join('')}</select></div>
+   <div class="field"><label for="hs-year">${f.year}</label><select class="input num" id="hs-year"><option value="">${f.any}</option>${[2015,2017,2019,2021,2023].map(v=>`<option>${v}</option>`).join('')}</select></div>
+   <div class="field f-wide"><label for="hs-gov">${f.gov}</label><select class="input" id="hs-gov">${opts(GOVS,'',f.any)}</select></div>
+   <button class="btn btn-primary btn-l f-wide" type="submit">${f.search}</button>
+  </form></div>
+  <section class="sec" style="padding-top:28px"><div class="wrap"><div class="sec-h"><h2>${l.brands}</h2></div>
+   <div class="makes">${Object.keys(makes).map(m=>`<a class="make" href="#cars" data-make="${m}"><i>${MAKES[m][0].slice(0,2).toUpperCase()}</i>${nm(MAKES,m)} <b class="num">${makes[m]}</b></a>`).join('')}</div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><h2>${l.featured}</h2><p>${l.featuredSub}</p></div><a class="link" href="#cars">${l.all}</a></div>
+   <div class="grid">${feat.map(card).join('')}</div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-h"><h2>${l.latest}</h2><a class="link" href="#cars">${l.all}</a></div>
+   <div class="grid">${latest.map(card).join('')}</div></div></section>
+  <section class="sec trust" id="trust"><div class="wrap"><div class="sec-h"><div><h2>${l.trustT}</h2><p>${l.trustS}</p></div></div>
+   <div class="trust-grid">
+    <div class="tcard"><h3><span class="ic">${I.shield}</span>${l.inspT}</h3><div class="lists"><div><h4>${l.inc}</h4><ul>${lst(l.inspInc,'yes')}</ul></div><div><h4>${l.exc}</h4><ul>${lst(l.inspExc,'no')}</ul></div></div><p class="rule">${l.inspRule}</p></div>
+    <div class="tcard"><h3><span class="ic">${I.doc}</span>${l.legalT}</h3><div class="lists"><div><h4>${l.inc}</h4><ul>${lst(l.legalInc,'yes')}</ul></div><div><h4>${l.exc}</h4><ul>${lst(l.legalExc,'no')}</ul></div></div><p class="rule">${l.legalRule}</p></div>
+   </div></div></section>
+  <section class="sec"><div class="wrap"><div class="sec-h"><h2>${l.why}</h2></div>
+   <div class="why">${l.whyItems.map(([ic,h,p])=>`<div><span class="ic">${I[ic].replace('<svg ','<svg width="22" height="22" ')}</span><h3>${h}</h3><p>${p}</p></div>`).join('')}</div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-h"><h2>${l.how}</h2></div>
+   <ol class="steps">${l.steps.map(([h,p])=>`<li><h3>${h}</h3><p>${p}</p></li>`).join('')}</ol></div></section>
+  <section class="band dark"><div class="wrap"><div><h2>${l.bandT}</h2><p>${l.bandS}</p></div><a class="btn btn-primary btn-l" href="#sell">${l.sell}</a></div></section>
+  <section class="sec" id="blog"><div class="wrap"><div class="sec-h"><div><h2>${l.blog}</h2><p>${l.blogSub}</p></div></div>
+   <div class="grid">${l.posts.map(([h,c],i)=>`<article class="post"><div class="pt">${[I.doc,I.shield,I.doc][i].replace('<svg ','<svg width="44" height="44" ')}</div><div class="pb"><span class="chip c-warn" style="justify-self:start">${l.draft}</span><h3>${h}</h3><p class="meta">${c}</p></div></article>`).join('')}</div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-h"><h2>${l.faq}</h2></div>
+   <div class="faq">${l.faqs.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div></section>`;
+}
+
+let F={mk:'',pmin:'',pmax:'',ymin:'',kmmax:'',tr:[],fu:[],bd:[],gv:'',src:[],insp:false,legal:false,sort:'new'};
+function filtered(){
+  let r=pub().filter(c=>(!F.mk||c.mk===F.mk)&&(!F.pmin||c.p>=+F.pmin)&&(!F.pmax||c.p<=+F.pmax)&&(!F.ymin||c.y>=+F.ymin)&&(!F.kmmax||c.km<=+F.kmmax)&&(!F.tr.length||F.tr.includes(c.tr))&&(!F.fu.length||F.fu.includes(c.fu))&&(!F.bd.length||F.bd.includes(c.bd))&&(!F.gv||c.gv===F.gv)&&(!F.src.length||F.src.includes(c.src))&&(!F.insp||hasBadge(c))&&(!F.legal||c.legal==='approved')&&(!F.model||c.md===F.model));
+  const s={new:(a,b)=>a.days-b.days,plow:(a,b)=>a.p-b.p,phigh:(a,b)=>b.p-a.p,km:(a,b)=>a.km-b.km,year:(a,b)=>b.y-a.y}[F.sort];
+  return r.sort(s);
+}
+function vCars(){
+  const l=L(),f=l.f;
+  const chk=(name,map,arr)=>`<div class="checks">${Object.keys(map).map(k=>`<label><input type="checkbox" data-arr="${name}" value="${k}"${arr.includes(k)?' checked':''}>${map[k]}</label>`).join('')}</div>`;
+  return `<div class="pagehead"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><a href="#home">${l.home}</a><span aria-hidden="true">/</span><span>${l.nav.cars}</span></nav><h1>${l.carsH}</h1></div></div>
+  <div class="wrap browse">
+   <form class="filters" id="filters" aria-label="${l.filters}">
+    <div class="fhead"><h2>${l.filters}</h2><div style="display:flex;gap:6px"><button class="btn btn-outline btn-s" type="button" id="fclear">${l.clear}</button><button class="iconbtn fclose" type="button" id="fclose" aria-label="Close">${I.x}</button></div></div>
+    <fieldset><legend>${f.make}</legend><select class="input" id="ff-mk" data-k="mk">${opts(MAKES,F.mk,f.any)}</select></fieldset>
+    <fieldset><legend>${l.f.pmin} / ${l.f.pmax} (${l.egp})</legend><div class="row2"><input class="input num" inputmode="numeric" id="ff-pmin" data-k="pmin" placeholder="${l.f.pmin}" value="${F.pmin}" aria-label="${l.f.pmin}"><input class="input num" inputmode="numeric" id="ff-pmax" data-k="pmax" placeholder="${l.f.pmax}" value="${F.pmax}" aria-label="${l.f.pmax}"></div></fieldset>
+    <fieldset><legend>${f.year} · ${l.kmMax}</legend><div class="row2"><select class="input num" id="ff-ymin" data-k="ymin" aria-label="${f.year}"><option value="">${f.any}</option>${[2015,2016,2017,2018,2019,2020,2021,2022,2023].map(v=>`<option${String(v)===F.ymin?' selected':''}>${v}</option>`).join('')}</select><select class="input num" id="ff-km" data-k="kmmax" aria-label="${l.kmMax}"><option value="">${f.any}</option>${[50000,100000,150000].map(v=>`<option value="${v}"${String(v)===F.kmmax?' selected':''}>≤ ${fmt(v)}</option>`).join('')}</select></div></fieldset>
+    <fieldset><legend>${f.gov}</legend><select class="input" id="ff-gv" data-k="gv">${opts(GOVS,F.gv,f.any)}</select></fieldset>
+    <fieldset><legend>${l.ver}</legend><div class="checks"><label><input type="checkbox" id="ff-insp"${F.insp?' checked':''}>${l.inspOnly}</label><label><input type="checkbox" id="ff-legal"${F.legal?' checked':''}>${l.legalOnly}</label></div></fieldset>
+    <fieldset><legend>${l.src}</legend>${chk('src',l.sources,F.src)}</fieldset>
+    <fieldset><legend>${l.trans}</legend>${chk('tr',l.transM,F.tr)}</fieldset>
+    <fieldset><legend>${l.body}</legend>${chk('bd',l.bodyM,F.bd)}</fieldset>
+    <fieldset><legend>${l.fuel}</legend>${chk('fu',l.fuelM,F.fu)}</fieldset>
+    <div class="fapply"><button class="btn btn-primary btn-block btn-l" type="button" id="fapply"></button></div>
+   </form>
+   <div style="min-width:0"><div class="toolbar"><button class="btn btn-outline ftoggle" type="button" id="fopen">${I.filter}${l.filters}<span id="fcount"></span></button><span class="count num" id="rcount" aria-live="polite"></span>
+    <label class="field" style="grid-auto-flow:column;align-items:center;gap:8px"><span class="flabel">${l.sort}</span><select class="input" id="sort">${Object.keys(l.sorts).map(k=>`<option value="${k}"${k===F.sort?' selected':''}>${l.sorts[k]}</option>`).join('')}</select></label></div>
+    <div class="active-chips" id="achips"></div><div id="results"></div></div>
+  </div>`;
+}
+function renderResults(){
+  const l=L(),r=filtered();
+  document.getElementById('rcount').innerHTML=t(l.results,{n:`<b>${r.length}</b>`});
+  document.getElementById('fapply').textContent=t(l.show,{n:r.length});
+  document.getElementById('results').innerHTML=r.length?`<div class="grid">${r.map(card).join('')}</div>`:`<div class="empty"><h3>${l.noRes}</h3><p class="small">${l.noResS}</p><button class="btn btn-outline" type="button" data-clear="1">${l.clear}</button></div>`;
+  const chips=[];
+  if(F.mk)chips.push(['mk',nm(MAKES,F.mk)]);if(F.gv)chips.push(['gv',nm(GOVS,F.gv)]);
+  if(F.pmin)chips.push(['pmin','≥ '+fmt(F.pmin)]);if(F.pmax)chips.push(['pmax','≤ '+fmt(F.pmax)]);if(F.ymin)chips.push(['ymin','≥ '+F.ymin]);if(F.kmmax)chips.push(['kmmax','≤ '+fmt(F.kmmax)+' '+l.km]);
+  if(F.insp)chips.push(['insp',l.inspOnly]);if(F.legal)chips.push(['legal',l.legalOnly]);
+  ['src','tr','bd','fu'].forEach(k=>F[k].forEach(v=>chips.push([k+':'+v,({src:l.sources,tr:l.transM,bd:l.bodyM,fu:l.fuelM})[k][v]])));
+  document.getElementById('achips').innerHTML=chips.map(([k,v])=>`<button type="button" data-rm="${k}">${esc(v)} ${I.x}</button>`).join('');
+  const fc=document.getElementById('fcount');fc.textContent=chips.length?` (${chips.length})`:'';
+}
+function bindCars(){
+  const form=document.getElementById('filters');
+  form.addEventListener('input',e=>{const el=e.target;
+    if(el.dataset.k)F[el.dataset.k]=el.value.replace(/[^\d\w]/g,'');
+    else if(el.dataset.arr){const a=F[el.dataset.arr];el.checked?a.push(el.value):a.splice(a.indexOf(el.value),1)}
+    else if(el.id==='ff-insp')F.insp=el.checked;else if(el.id==='ff-legal')F.legal=el.checked;
+    F.model='';renderResults()});
+  form.addEventListener('submit',e=>e.preventDefault());
+  document.getElementById('sort').onchange=e=>{F.sort=e.target.value;renderResults()};
+  const clear=()=>{F={mk:'',pmin:'',pmax:'',ymin:'',kmmax:'',tr:[],fu:[],bd:[],gv:'',src:[],insp:false,legal:false,sort:F.sort};render()};
+  document.getElementById('fclear').onclick=clear;
+  document.getElementById('fopen').onclick=()=>{form.classList.add('open');document.body.style.overflow='hidden'};
+  const close=()=>{form.classList.remove('open');document.body.style.overflow=''};
+  document.getElementById('fclose').onclick=close;document.getElementById('fapply').onclick=close;
+  document.getElementById('achips').onclick=e=>{const b=e.target.closest('[data-rm]');if(!b)return;const k=b.dataset.rm;
+    if(k.includes(':')){const[a,v]=k.split(':');F[a]=F[a].filter(x=>x!==v)}else if(k==='insp'||k==='legal')F[k]=false;else F[k]='';render()};
+  document.getElementById('results').addEventListener('click',e=>{if(e.target.closest('[data-clear]'))clear()});
+  renderResults();
+}
+
+function vCar(id){
+  const l=L(),c=CARS.find(x=>x.id===id&&x.st==='publish');
+  if(!c)return `<div class="wrap sec"><div class="empty"><h3>404</h3><a class="btn btn-primary" href="#cars">${l.browse}</a></div></div>`;
+  const badge=hasBadge(c);
+  const condSrc=k=>badge&&['overall','paint','accident'].includes(k)?`<span class="chip c-ok">${I.shield}${l.srcInsp}</span>`:`<span class="chip c-info">${l.srcSeller}</span>`;
+  const condVal=(k,v)=>({overall:l.condM,paint:l.paintM,accident:l.accM,service:l.svcM})[k]?.[v]??v;
+  const cats=Object.keys(l.cats).map((k,i)=>{const obs=c.insp.o==='obs'&&(k==='exterior'||k==='tires');return `<div><span>${l.cats[k]}</span><i class="${obs?'k-obs':'k-ok'}">${obs?l.obs:l.ok}</i></div>`}).join('');
+  let inspBody;
+  if(badge)inspBody=`<div style="display:flex;flex-wrap:wrap;gap:6px">${inspChip(c)}</div><div class="small num">${l.inspDone}: <b>${c.insp.date}</b> · ${l.validTo}: <b>${c.insp.valid}</b> · ${l.outcome}: <b>${c.insp.o==='obs'?l.passedObs:l.passed}</b></div><div class="cats">${cats}</div><p class="small">${l.notChecked}</p>`;
+  else if(c.insp.s==='completed')inspBody=`${inspChip(c)}<p class="small">${l.inspAwaitTxt}</p>`;
+  else if(c.insp.s==='scheduled'||c.insp.s==='requested')inspBody=`${inspChip(c)}<p class="small">${l.inspSchedTxt}</p>`;
+  else inspBody=`${inspChip(c)}<p class="small">${l.noInsp}</p><button class="btn btn-outline btn-s" type="button" id="reqInsp" style="justify-self:start">${l.reqInsp}</button>`;
+  const legalBody=c.legal==='approved'?`${legalChip(c)}<p class="small">${l.legalOkTxt}</p>`:c.legal==='review'?`${legalChip(c)}<p class="small">${l.legalRevTxt}</p>`:`<span class="chip c-neutral">${I.doc}${l.legalNone}</span>`;
+  const sim=pub().filter(x=>x.id!==c.id&&(x.bd===c.bd)).sort((a,b)=>Math.abs(a.p-c.p)-Math.abs(b.p-c.p)).slice(0,3);
+  const isDealer=c.src==='dealership';
+  const contact=`<div class="contact"><a class="btn btn-wa btn-l" href="#car-${c.id}" data-act="wa">${I.wa}${l.wa}</a><button class="btn btn-navy btn-l" type="button" data-act="num">${I.phone}${l.showNum}</button></div>`;
+  return `<div class="pagehead"><div class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><a href="#home">${l.home}</a><span aria-hidden="true">/</span><a href="#cars">${l.nav.cars}</a><span aria-hidden="true">/</span><a href="#cars" data-make="${c.mk}">${nm(MAKES,c.mk)}</a><span aria-hidden="true">/</span><span>${c.md}</span></nav></div></div>
+  <div class="wrap det">
+   <div style="display:grid;gap:20px;min-width:0">
+    <div class="gal"><div class="main" id="galmain">${carSVG(c,0)}<span class="counter num" id="galcount">1 / 3</span></div><div class="thumbs">${[0,1,2].map(v=>`<button type="button" data-view="${v}" aria-current="${v===0}" aria-label="${v+1}">${carSVG(c,v)}</button>`).join('')}</div></div>
+    <section class="panel"><h2>${l.dVer}</h2><div class="vgrid"><div class="vbox${badge?' on':''}"><h3>${I.shield}${l.inspT}</h3>${inspBody}</div><div class="vbox"><h3>${I.doc}${l.legalT}</h3>${legalBody}</div></div></section>
+    <section class="panel"><h2>${l.dSpecs}</h2><div class="tbl-wrap"><table class="kv"><tbody>
+     <tr><th>${l.f.make} / ${l.f.model}</th><td>${title(c)}</td></tr><tr><th>${l.year}</th><td class="num">${c.y}</td></tr><tr><th>${l.mileage}</th><td class="num">${fmt(c.km)} ${l.km}</td></tr>
+     <tr><th>${l.trans}</th><td>${l.transM[c.tr]}</td></tr><tr><th>${l.fuel}</th><td>${l.fuelM[c.fu]}</td></tr><tr><th>${l.body}</th><td>${l.bodyM[c.bd]}</td></tr>
+     <tr><th>${l.engine}</th><td class="num">${fmt(c.cc)} cc</td></tr><tr><th>${l.color}</th><td>${lang==='ar'?COLORS[c.col][2]:COLORS[c.col][1]}</td></tr></tbody></table></div></section>
+    <section class="panel"><h2>${l.dCond}</h2><div class="tbl-wrap"><table><thead><tr><th>${l.field}</th><th>${l.value}</th><th>${l.source}</th></tr></thead><tbody>
+     ${l.condRows.map(([lab,k])=>`<tr><td>${lab}</td><td>${condVal(k,c.cond[k])}</td><td>${condSrc(k)}</td></tr>`).join('')}</tbody></table></div></section>
+    <section class="panel"><h2>${l.tipsT}</h2><ul class="tips">${l.tips.map(x=>`<li>${x}</li>`).join('')}</ul><a class="link small" href="#car-${c.id}" data-act="report">${l.report}</a></section>
+   </div>
+   <aside class="side">
+    <div class="panel dtitle"><div style="display:flex;flex-wrap:wrap;gap:6px">${srcChip(c)}${c.feat?`<span class="chip c-gold">${I.star}${l.featuredC}</span>`:''}</div>
+     <h1>${title(c)} <span class="num">${c.y}</span></h1><div class="bigprice num">${priceH(c)}</div><span class="small">${c.neg?l.neg:l.fixed}</span>
+     <div class="keyspecs num"><div><span>${I.gauge}${l.mileage}</span><b>${fmt(c.km)} ${l.km}</b></div><div><span>${I.gear}${l.trans}</span><b>${l.transM[c.tr]}</b></div><div><span>${I.fuel}${l.fuel}</span><b>${l.fuelM[c.fu]}</b></div><div><span>${I.pin}${l.loc}</span><b>${nm(CITIES,c.ct)}</b></div></div>
+     ${contact}</div>
+    <div class="panel"><h2>${l.dSeller}</h2><div class="seller"><span class="avatar">${esc(sellerName(c).slice(0,1))}</span><div><b>${esc(sellerName(c))}</b><div class="small">${l.sources[c.src]}${isDealer?' · '+l.verifiedDealer:''} · ${nm(GOVS,c.gv)}</div></div></div></div>
+    <form class="panel" id="inq" novalidate><h2>${l.inquiry}</h2>
+     <div class="field"><label for="q-name">${l.name}</label><input class="input" id="q-name" autocomplete="name"><span class="help" id="e-name" hidden></span></div>
+     <div class="field"><label for="q-phone">${l.phone}</label><input class="input num" id="q-phone" inputmode="tel" dir="ltr" placeholder="01xxxxxxxxx" autocomplete="tel"><span class="help" id="e-phone" hidden></span></div>
+     <div class="field"><label for="q-msg">${l.msg}</label><textarea class="input" id="q-msg">${lang==='ar'?'السلام عليكم، العربية لسه متاحة؟':'Hello, is the car still available?'}</textarea></div>
+     <label class="small" style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" id="q-consent" checked style="margin-top:6px;accent-color:var(--green-ink)">${l.consent}</label>
+     <button class="btn btn-primary" type="submit">${l.send}</button></form>
+   </aside>
+  </div>
+  ${sim.length?`<section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-h"><h2>${l.dSimilar}</h2></div><div class="grid">${sim.map(card).join('')}</div></div></section>`:''}
+  <div class="stickybar"><a class="btn btn-wa" href="#car-${c.id}" data-act="wa">${I.wa}${l.wa}</a><button class="btn btn-navy" type="button" data-act="num">${I.phone}${l.call}</button></div>`;
+}
+function bindCar(id){
+  const c=CARS.find(x=>x.id===id);if(!c)return;const l=L();
+  document.querySelectorAll('.thumbs button').forEach(b=>b.onclick=()=>{const v=+b.dataset.view;document.getElementById('galmain').innerHTML=carSVG(c,v)+`<span class="counter num">${v+1} / 3</span>`;document.querySelectorAll('.thumbs button').forEach(x=>x.setAttribute('aria-current',x===b))});
+  document.querySelectorAll('[data-act]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();const a=b.dataset.act;
+    if(a==='wa'){LEADS.unshift({car:c.id,ch:'whatsapp',t:0});toast(l.toastWa)}
+    else if(a==='num'){LEADS.unshift({car:c.id,ch:'call',t:0});toast(l.toastNum)}
+    else toast(lang==='ar'?'نموذج الإبلاغ يفتح هنا في الموقع الحقيقي.':'The report form opens here on the live site.')}));
+  const rq=document.getElementById('reqInsp');if(rq)rq.onclick=()=>{c.insp={s:'requested'};AUDIT.unshift({t:0,a:{ar:`طلب فحص لسيارة #${c.id}`,en:`Inspection requested for car #${c.id}`}});toast(l.toastReq);render()};
+  document.getElementById('inq').addEventListener('submit',e=>{e.preventDefault();
+    const n=document.getElementById('q-name'),p=document.getElementById('q-phone'),en=document.getElementById('e-name'),ep=document.getElementById('e-phone');
+    let ok=true;en.hidden=ep.hidden=true;
+    if(!n.value.trim()){en.textContent=l.errName;en.hidden=false;en.style.color='var(--danger)';ok=false}
+    if(!/^01[0125]\d{8}$/.test(p.value.replace(/\s/g,''))){ep.textContent=l.errPhone;ep.hidden=false;ep.style.color='var(--danger)';ok=false}
+    if(!ok)return;
+    INQ.unshift({car:c.id,name:n.value.trim(),msg:document.getElementById('q-msg').value.trim(),t:0});LEADS.unshift({car:c.id,ch:'form',t:0});
+    e.target.reset();toast(l.toastInq)});
+}
+
+let W={step:0,mk:'hyundai',md:'Accent RB',y:'2018',km:'87000',tr:'automatic',cond:'very_good',paint:'partial',acc:'none',p:'520000',neg:true,gv:'cairo',ct:'nasr',desc:'',rules:false};
+function vSell(){
+  const l=L(),s=W.step;
+  const prog=l.wsteps.map((x,i)=>`<li class="${i<s?'done':i===s?'cur':''}"${i===s?' aria-current="step"':''}><span>${i+1}. ${x}</span></li>`).join('');
+  let body='';
+  if(s===0)body=`<div class="fgrid"><div class="field"><label for="w-mk">${l.f.make}</label><select class="input" id="w-mk" data-w="mk">${opts(MAKES,W.mk)}</select></div><div class="field"><label for="w-md">${l.f.model}</label><input class="input" id="w-md" data-w="md" value="${esc(W.md)}"></div><div class="field"><label for="w-y">${l.year}</label><input class="input num" id="w-y" data-w="y" inputmode="numeric" value="${esc(W.y)}"></div><div class="field"><label for="w-km">${l.mileage} (${l.km})</label><input class="input num" id="w-km" data-w="km" inputmode="numeric" value="${esc(W.km)}"></div><div class="field full"><label for="w-tr">${l.transL}</label><select class="input" id="w-tr" data-w="tr">${Object.keys(l.transM).map(k=>`<option value="${k}"${k===W.tr?' selected':''}>${l.transM[k]}</option>`).join('')}</select></div></div>`;
+  if(s===1)body=`<div class="notice n-info">${I.info}<span>${l.declNote}</span></div><div class="fgrid"><div class="field"><label for="w-cond">${l.condO}</label><select class="input" id="w-cond" data-w="cond">${Object.keys(l.condM).map(k=>`<option value="${k}"${k===W.cond?' selected':''}>${l.condM[k]}</option>`).join('')}</select></div><div class="field"><label for="w-paint">${l.paintL}</label><select class="input" id="w-paint" data-w="paint">${Object.keys(l.paintM).map(k=>`<option value="${k}"${k===W.paint?' selected':''}>${l.paintM[k]}</option>`).join('')}</select></div><div class="field full"><label for="w-acc">${l.accL}</label><select class="input" id="w-acc" data-w="acc">${Object.keys(l.accM).map(k=>`<option value="${k}"${k===W.acc?' selected':''}>${l.accM[k]}</option>`).join('')}</select></div><div class="field full"><label for="w-desc">${l.desc}</label><textarea class="input" id="w-desc" data-w="desc">${esc(W.desc)}</textarea></div></div>`;
+  if(s===2)body=`<div class="fgrid"><div class="field"><label for="w-p">${l.price} (${l.egp})</label><input class="input num" id="w-p" data-w="p" inputmode="numeric" value="${esc(W.p)}"><span class="help num">${fmt(+W.p||0)} ${l.egp}</span></div><div class="field" style="align-content:end"><label style="display:flex;gap:8px;align-items:center;min-height:44px"><input type="checkbox" id="w-neg" data-w="neg"${W.neg?' checked':''} style="accent-color:var(--green-ink)">${l.negL}</label></div><div class="field"><label for="w-gv">${l.f.gov}</label><select class="input" id="w-gv" data-w="gv">${opts(GOVS,W.gv)}</select></div><div class="field"><label for="w-ct">${l.city}</label><select class="input" id="w-ct" data-w="ct">${opts(CITIES,W.ct)}</select></div></div>`;
+  if(s===3){const demo={mk:W.mk,md:W.md,bd:'sedan',col:'white'};body=`<p class="help">${l.photosHelp}</p><div class="photos">${l.angles.map((a,i)=>i<4?`<div class="has" title="${a}">${carSVG(demo,i%3)}</div>`:`<div>+ ${a}</div>`).join('')}</div>`}
+  if(s===4){body=`<div class="tbl-wrap"><table class="kv"><tbody><tr><th>${l.car}</th><td><bdi>${nm(MAKES,W.mk)} ${esc(W.md)}</bdi> <span class="num">${esc(W.y)}</span></td></tr><tr><th>${l.mileage}</th><td class="num">${fmt(+W.km||0)} ${l.km}</td></tr><tr><th>${l.price}</th><td class="num">${fmt(+W.p||0)} ${l.egp} · ${W.neg?l.neg:l.fixed}</td></tr><tr><th>${l.loc}</th><td>${nm(CITIES,W.ct)}، ${nm(GOVS,W.gv)}</td></tr><tr><th>${l.paintL}</th><td>${l.paintM[W.paint]} <span class="chip c-info">${l.srcSeller}</span></td></tr></tbody></table></div><label style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" id="w-rules" data-w="rules"${W.rules?' checked':''} style="margin-top:7px;accent-color:var(--green-ink)">${l.rulesOk}</label><span class="help" id="e-rules" hidden style="color:var(--danger)"></span>`}
+  return `<div class="pagehead"><div class="wrap"><nav class="crumbs"><a href="#home">${l.home}</a><span aria-hidden="true">/</span><span>${l.sell}</span></nav><h1>${l.wizT}</h1><p class="small">${l.wizS}</p></div></div>
+  <div class="wrap"><form class="wiz" id="wiz" novalidate><ol class="progress">${prog}</ol><div class="panel">${body}</div>
+   <div class="wnav"><button class="btn btn-outline" type="button" id="wback"${s===0?' disabled':''}>${l.back}</button><button class="btn btn-primary" type="submit">${s===4?l.submit:l.next}</button></div></form></div>`;
+}
+function bindSell(){
+  const f=document.getElementById('wiz');
+  f.addEventListener('input',e=>{const k=e.target.dataset.w;if(!k)return;W[k]=e.target.type==='checkbox'?e.target.checked:e.target.value;if(k==='p'){const h=e.target.nextElementSibling;if(h)h.textContent=fmt(+W.p||0)+' '+L().egp}});
+  document.getElementById('wback').onclick=()=>{W.step=Math.max(0,W.step-1);render()};
+  f.addEventListener('submit',e=>{e.preventDefault();
+    if(W.step<4){W.step++;render();return}
+    if(!W.rules){const er=document.getElementById('e-rules');er.textContent=lang==='ar'?'لازم توافق على قواعد الإعلان قبل الإرسال':'Please accept the listing rules before submitting';er.hidden=false;return}
+    const id=Math.max(...CARS.map(c=>c.id))+1;
+    CARS.push({id,mk:W.mk,md:W.md||'—',trim:'',y:+W.y||2018,km:+W.km||0,p:+W.p||0,neg:W.neg?1:0,tr:W.tr,fu:'petrol',bd:'sedan',gv:W.gv,ct:W.ct,src:'individual_seller',col:'white',cc:1600,feat:0,st:'pending',insp:{s:'none'},legal:'none',seller:'Mona',sellerAr:'منى',mine:1,days:0,subMin:0,cond:{overall:W.cond,paint:W.paint,accident:W.acc,service:'partial',owners:1}});
+    AUDIT.unshift({t:0,a:{ar:`إرسال إعلان #${id} للمراجعة`,en:`Listing #${id} submitted for review`}});
+    W.step=0;W.rules=false;DT='cars';toast(L().toastSub);location.hash='#account'});
+}
+
+let DT='overview',AT='overview',REJ=null;
+function stChip(c){const l=L();const m={publish:'c-ok',pending:'c-warn',rejected:'c-danger',draft:'c-neutral'};return `<span class="chip ${m[c.st]}">${l.st[c.st]}</span>`}
+function thumbRow(c,extra,acts){return `<div class="qrow"><div class="thumb">${carSVG(c,0)}</div><div style="min-width:0"><h3>${title(c)} <span class="num">${c.y}</span></h3><div class="m num">${fmt(c.p)} ${L().egp} · ${fmt(c.km)} ${L().km} · ${nm(CITIES,c.ct)}</div>${extra||''}</div><div class="acts">${acts||''}</div></div>`}
+function vAccount(){
+  const l=L(),mine=CARS.filter(c=>c.mine);
+  const nav=Object.keys(l.dNav).map(k=>`<button type="button" data-dt="${k}" aria-current="${DT===k}">${l.dNav[k]}${k==='inq'&&INQ.length?`<span class="cnt">${INQ.length}</span>`:''}</button>`).join('');
+  let main='';
+  if(DT==='overview'){main=`<h1>${l.dNav.overview}</h1><div class="kpis num"><div class="kpi"><span>${l.kLive}</span><b>${mine.filter(c=>c.st==='publish').length}</b></div><div class="kpi${mine.some(c=>c.st==='pending')?' attn':''}"><span>${l.kPending}</span><b>${mine.filter(c=>c.st==='pending').length}</b></div><div class="kpi"><span>${l.kViews}</span><b>412</b><small>${l.demoNums}</small></div><div class="kpi"><span>${l.kContacts}</span><b>${23+INQ.length}</b><small>${l.demoNums}</small></div></div>
+   ${mine.filter(c=>c.st==='rejected').map(c=>`<div class="notice n-warn">${I.info}<span><b>${title(c)}</b> — ${l.st.rejected}: ${l.reasons[c.rej||0]}. ${lang==='ar'?'عدّل الصور وابعته تاني.':'Update the photos and resubmit.'}</span></div>`).join('')}
+   <div class="box"><h2>${l.dNav.cars}</h2>${mine.map(c=>thumbRow(c,`<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">${stChip(c)}${c.st==='publish'?inspChip(c):''}</div>`)).join('')}</div>`}
+  if(DT==='cars'){main=`<h1>${l.dNav.cars}</h1><div class="box">${mine.map(c=>thumbRow(c,`<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">${stChip(c)}${c.st==='rejected'?`<span class="small">${l.rejReason}: ${l.reasons[c.rej||0]}</span>`:''}</div>`,`${c.st==='publish'?`<a class="btn btn-outline btn-s" href="#car-${c.id}">${l.view}</a>`:''}<button class="btn btn-outline btn-s" type="button" data-demo="1">${l.edit}</button>${c.st==='publish'?`<button class="btn btn-outline btn-s" type="button" data-demo="1">${l.markSold}</button>`:''}`)).join('')}<a class="btn btn-primary" href="#sell" style="justify-self:start">+ ${l.wizT}</a></div>`}
+  if(DT==='inq'){main=`<h1>${l.inqT}</h1><div class="box">${INQ.length?INQ.map(q=>{const c=CARS.find(x=>x.id===q.car);return `<div class="qrow" style="grid-template-columns:1fr"><div><h3>${esc(q.name)} · <span class="small">${title(c)}</span></h3><p class="small">${esc(q.msg)}</p><span class="small">${l.now}</span></div></div>`}).join(''):`<div class="empty" style="border:0"><p>${l.noInq}</p><a class="btn btn-outline" href="#car-4">${lang==='ar'?'جرّب تبعت استفسار على عربية منى':'Try sending an inquiry on Mona’s car'}</a></div>`}</div>`}
+  if(DT==='insp'){main=`<h1>${l.dNav.insp}</h1><div class="box">${mine.filter(c=>c.st==='publish').map(c=>thumbRow(c,`<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">${inspChip(c)}${legalChip(c)||`<span class="chip c-neutral">${l.legalNone}</span>`}</div>`)).join('')}</div>`}
+  if(DT==='settings'){main=`<h1>${l.dNav.settings}</h1><div class="box"><div class="fgrid"><div class="field"><label for="s-n">${l.name}</label><input class="input" id="s-n" value="${lang==='ar'?'منى':'Mona'}"></div><div class="field"><label for="s-p">${l.phone}</label><input class="input num" id="s-p" dir="ltr" placeholder="01xxxxxxxxx"></div></div></div>`}
+  return `<div class="dash"><aside class="rail dark"><div class="who"><span class="avatar">M</span><div>${l.sellerName}<small>${l.memberRole}</small></div></div><nav aria-label="${l.dashSeller}">${nav}</nav></aside><div class="dmain">${main}</div></div>`;
+}
+function vAdmin(){
+  const l=L(),P=pub(),pend=CARS.filter(c=>c.st==='pending'),awaitI=CARS.filter(c=>c.st==='publish'&&c.insp.s==='completed'&&!c.insp.approved),openI=CARS.filter(c=>c.st==='publish'&&['requested','scheduled'].includes(c.insp.s));
+  const nav=Object.keys(l.aNav).map(k=>`<button type="button" data-at="${k}" aria-current="${AT===k}">${l.aNav[k]}${k==='pending'&&pend.length?`<span class="cnt">${pend.length}</span>`:''}${k==='insp'&&awaitI.length?`<span class="cnt">${awaitI.length}</span>`:''}</button>`).join('');
+  const pendBox=`<div class="box"><h2>${l.pendingT}<span class="chip c-warn num">${pend.length}</span></h2>${pend.length?pend.map(c=>thumbRow(c,`<div class="m" style="margin-top:4px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">${srcChip(c)} ${l.by} ${esc(sellerName(c))} · ${c.subMin?t(l.ago,{n:c.subMin}):l.now}</div>`,REJ===c.id?`<div class="rejectbox"><select class="input" id="rej-r" aria-label="${l.rejReason}">${l.reasons.map((r,i)=>`<option value="${i}">${r}</option>`).join('')}</select><button class="btn btn-danger btn-s" type="button" data-rejc="${c.id}">${l.confirmReject}</button><button class="btn btn-outline btn-s" type="button" data-rejx="1">${l.cancel}</button></div>`:`<button class="btn btn-primary btn-s" type="button" data-appr="${c.id}">${l.approve}</button><button class="btn btn-danger btn-s" type="button" data-rej="${c.id}">${l.reject}</button>`)).join(''):`<p class="small">${l.noPending}</p>`}</div>`;
+  const inspBox=`<div class="box"><h2>${l.inspQ}</h2><div class="notice n-info">${I.info}<span>${l.fourEyes}</span></div>${awaitI.length?awaitI.map(c=>thumbRow(c,`<div class="m" style="margin-top:4px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">${inspChip(c)} ${l.inspector}: <b>${c.insp.inspector}</b> · ${l.outcome}: ${l.passed}</div>`,`<button class="btn btn-primary btn-s" type="button" data-iapp="${c.id}">${l.approveInsp}</button>`)).join(''):`<p class="small">${l.noInspQ}</p>`}${openI.map(c=>thumbRow(c,`<div style="margin-top:4px">${inspChip(c)}</div>`)).join('')}</div>`;
+  const leadsBox=`<div class="box"><h2>${l.leadsT}</h2><div class="tbl-wrap"><table><thead><tr><th>${l.car}</th><th>${l.source}</th><th>${l.channel}</th><th>${l.when}</th></tr></thead><tbody>${LEADS.slice(0,8).map(x=>{const c=CARS.find(y=>y.id===x.car);return `<tr><td>${title(c)}</td><td>${l.sources[c.src]}</td><td>${l.ch[x.ch]}</td><td class="num">${x.t?t(l.ago,{n:x.t}):l.now}</td></tr>`}).join('')}</tbody></table></div></div>`;
+  const auditBox=`<div class="box"><h2>${l.auditT}</h2><ul class="audit">${AUDIT.slice(0,10).map(a=>`<li><time class="num">${a.t?t(l.ago,{n:a.t}):l.now}</time><span>${a.a[lang]}</span></li>`).join('')}</ul></div>`;
+  let main='';
+  if(AT==='overview')main=`<h1>${l.aNav.overview}</h1><div class="kpis num"><div class="kpi"><span>${l.kActive}</span><b>${P.length}</b></div><div class="kpi${pend.length?' attn':''}"><span>${l.kPendingA}</span><b>${pend.length}</b></div><div class="kpi${awaitI.length?' attn':''}"><span>${l.kInspOpen}</span><b>${awaitI.length+openI.length}</b></div><div class="kpi"><span>${l.kLeads}</span><b>${LEADS.length}</b><small>${l.demoNums}</small></div></div>${pendBox}${inspBox}`;
+  if(AT==='pending')main=`<h1>${l.aNav.pending}</h1>${pendBox}`;
+  if(AT==='insp')main=`<h1>${l.aNav.insp}</h1>${inspBox}`;
+  if(AT==='leads')main=`<h1>${l.aNav.leads}</h1>${leadsBox}`;
+  if(AT==='audit')main=`<h1>${l.aNav.audit}</h1>${auditBox}`;
+  return `<div class="dash"><aside class="rail dark"><div class="who"><span class="avatar">A</span><div>${l.adminName}<small>${l.adminRole}</small></div></div><nav aria-label="${l.dashAdmin}">${nav}</nav></aside><div class="dmain">${main}</div></div>`;
+}
+function bindDash(){
+  document.querySelectorAll('[data-dt]').forEach(b=>b.onclick=()=>{DT=b.dataset.dt;render()});
+  document.querySelectorAll('[data-at]').forEach(b=>b.onclick=()=>{AT=b.dataset.at;REJ=null;render()});
+  const l=L();
+  document.querySelector('.dmain')?.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.demo){toast(lang==='ar'?'في الموقع الحقيقي بيفتح نموذج التعديل.':'Opens the edit form on the live site.')}
+    if(b.dataset.appr){const c=CARS.find(x=>x.id==b.dataset.appr);c.st='publish';c.days=0;AUDIT.unshift({t:0,a:{ar:`موافقة ونشر إعلان #${c.id} (بدون شارة فحص)`,en:`Listing #${c.id} approved & published (no inspection badge)`}});toast(l.toastApprove);render()}
+    if(b.dataset.rej){REJ=+b.dataset.rej;render()}
+    if(b.dataset.rejx){REJ=null;render()}
+    if(b.dataset.rejc){const c=CARS.find(x=>x.id==b.dataset.rejc);const r=+document.getElementById('rej-r').value;c.st='rejected';c.rej=r;REJ=null;AUDIT.unshift({t:0,a:{ar:`رفض إعلان #${c.id} — ${T.ar.reasons[r]}`,en:`Listing #${c.id} rejected — ${T.en.reasons[r]}`}});toast(l.toastReject);render()}
+    if(b.dataset.iapp){const c=CARS.find(x=>x.id==b.dataset.iapp);c.insp.approved=1;AUDIT.unshift({t:0,a:{ar:`اعتماد فحص سيارة #${c.id} — ${c.insp.inspector} فحص، المدير اعتمد`,en:`Inspection approved for car #${c.id} — inspected by ${c.insp.inspector}, approved by manager`}});toast(l.toastInspOk);render()}
+  });
+}
+
+/* ---------- router ---------- */
+function route(){const h=(location.hash||'#home').slice(1);if(/^car-\d+$/.test(h))return['car',+h.split('-')[1]];return[['home','cars','sell','account','admin'].includes(h)?h:'home']}
+let lastRoute='';
+function render(){
+  const [r,id]=route(),app=document.getElementById('app');
+  chrome(r);gid=0;
+  app.innerHTML=r==='home'?vHome():r==='cars'?vCars():r==='car'?vCar(id):r==='sell'?vSell():r==='account'?vAccount():vAdmin();
+  if(r==='cars')bindCars();if(r==='car')bindCar(id);if(r==='sell')bindSell();if(r==='account'||r==='admin')bindDash();
+  if(r==='home')bindHome();
+  const key=location.hash;if(key!==lastRoute){window.scrollTo(0,0);lastRoute=key}
+}
+function bindHome(){
+  const mk=document.getElementById('hs-make'),mdl=document.getElementById('hs-model');
+  mk.onchange=()=>{const ms=[...new Set(pub().filter(c=>c.mk===mk.value).map(c=>c.md))];mdl.innerHTML=`<option value="">${L().f.any}</option>`+ms.map(m=>`<option>${m}</option>`).join('')};
+  document.getElementById('heroSearch').onsubmit=e=>{e.preventDefault();F={mk:mk.value,model:mdl.value,pmin:'',pmax:document.getElementById('hs-pmax').value,ymin:document.getElementById('hs-year').value,kmmax:'',tr:[],fu:[],bd:[],gv:document.getElementById('hs-gov').value,src:[],insp:false,legal:false,sort:'new'};location.hash='#cars';if(location.hash==='#cars')render()};
+}
+document.addEventListener('click',e=>{
+  const fav=e.target.closest('[data-fav]');if(fav){const id=+fav.dataset.fav;FAVS.has(id)?FAVS.delete(id):FAVS.add(id);fav.setAttribute('aria-pressed',FAVS.has(id));toast(FAVS.has(id)?L().toastFav:L().toastFavOff);return}
+  const mk=e.target.closest('[data-make]');if(mk){F={mk:mk.dataset.make,pmin:'',pmax:'',ymin:'',kmmax:'',tr:[],fu:[],bd:[],gv:'',src:[],insp:false,legal:false,sort:'new'};if(location.hash==='#cars'){e.preventDefault();render()}}
+  const an=e.target.closest('[data-anchor]');if(an){e.preventDefault();document.getElementById('mainnav').classList.remove('open');const go=()=>document.getElementById(an.dataset.anchor)?.scrollIntoView({behavior:'smooth'});if(route()[0]!=='home'){location.hash='#home';setTimeout(go,60)}else go()}
+  const soon=e.target.closest('[data-soon]');if(soon){e.preventDefault();toast(lang==='ar'?'دليل المعارض: صفحة /dealers/ في الموقع الحقيقي.':'Dealer directory: the /dealers/ page on the live site.')}
+  if(e.target.closest('.mainnav a')&&!an&&!soon)document.getElementById('mainnav').classList.remove('open');
+});
+document.getElementById('menubtn').onclick=e=>{const n=document.getElementById('mainnav');const o=n.classList.toggle('open');e.currentTarget.setAttribute('aria-expanded',o)};
+document.getElementById('langbtn').onclick=()=>{lang=lang==='ar'?'en':'ar';try{localStorage.setItem('cg-lang',lang)}catch(e){}render()};
+window.addEventListener('hashchange',()=>{document.body.style.overflow='';render()});
+render();
+})();
+</script>

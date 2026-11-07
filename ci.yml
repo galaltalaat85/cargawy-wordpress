@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_DATABASE: cargawy_test
+          MARIADB_USER: cg
+          MARIADB_PASSWORD: cg_ci_pw
+          MARIADB_ROOT_PASSWORD: root_ci_pw
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=10
+    strategy:
+      matrix:
+        php: ["8.1", "8.3"]
+    env:
+      CG_TEST_DB_NAME: cargawy_test
+      CG_TEST_DB_USER: cg
+      CG_TEST_DB_PASSWORD: cg_ci_pw
+      CG_TEST_DB_HOST: 127.0.0.1:3306
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mysqli, intl, mbstring, zip, gd
+          coverage: none
+      - run: composer install --no-interaction --no-progress
+      - name: Coding standards (WPCS)
+        run: vendor/bin/phpcs
+      - name: PHP syntax
+        run: find wp-content -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null
+      - name: Unit & integration tests
+        run: vendor/bin/phpunit
